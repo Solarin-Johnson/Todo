@@ -24,29 +24,32 @@ export default HomeScreen = ({ route }) => {
   const [tasks, settasks] = useState()
   const [newTask, setnewTask] = useState(false)
   // removeItemFromStorage('tasks')
+  const CheckUname = async () => {
+    const loadUname = await loadData('uname', '')
+    if (loadUname !== '') {
+      setuname(loadUname)
+    } else {
+      setuname(false)
+    }
+  }
+  const LoadTasks = async () => {
+    const loadTask = await loadData('tasks', '')
+    if (loadTask !== '') {
+      console.log('loadtask', loadTask)
+      settasks(loadTask)
+    } else {
+      settasks(false)
+    }
+  }
   useEffect(() => {
-    const CheckUname = async () => {
-      const loadUname = await loadData('uname', '')
-      if (loadUname !== '') {
-        setuname(loadUname)
-      } else {
-        setuname(false)
-      }
-    }
-    const LoadTasks = async () => {
-      const loadTask = await loadData('tasks', '')
-      if (loadTask !== '') {
-        console.log('loadtask', loadTask)
-        settasks(loadTask)
-      } else {
-        settasks(false)
-      }
-    }
+    LoadTasks()
+  }, [newTask])
+  useEffect(() => {
     CheckUname()
     LoadTasks()
   }, [])
 
-  console.log(tasks)
+  console.log('tasks', tasks)
 
   useBackHandler(() => {
     if (isBackPressed) {
