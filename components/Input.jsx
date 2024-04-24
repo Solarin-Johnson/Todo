@@ -11,16 +11,19 @@ export default function InputText({
   placeholder,
   size,
   padding,
+  opacity,
+  autoCapitalize,
 }) {
   return (
     <TextInput
-      // ref={InputRef}
+      ref={InputRef}
       style={[
         styles.input,
         {
           color: color?.textColor,
           fontSize: size,
           paddingVertical: padding || 13,
+          opacity: opacity || 1,
         },
       ]}
       value={text}
@@ -29,7 +32,7 @@ export default function InputText({
       placeholderTextColor={'grey'}
       textAlign='left'
       maxLength={maxLength || 24}
-      autoCapitalize='words'
+      autoCapitalize={autoCapitalize || 'words'}
       cursorColor={color?.textColor}
       selectionColor={color?.textColor}
       autoFocus={autoFocus}

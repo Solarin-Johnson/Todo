@@ -10,17 +10,18 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import InputText from './Input'
-import { FontAwesome5 } from '@expo/vector-icons'
-import { FontAwesome6 } from '@expo/vector-icons'
+import { FontAwesome5, FontAwesome6, FontAwesome } from '@expo/vector-icons'
+import TouchableMadeEasier from './touchables'
 
 export default function NewTask({ color, close }) {
   const translateY = useRef(new Animated.Value(300)).current
-  const slide = useRef(new Animated.Value(50)).current
+  const slide = useRef(new Animated.Value(100)).current
   const InputRef = useRef(null)
   const DescRef = useRef(null)
   const [input, setinput] = useState()
   const [descState, setdescState] = useState(false)
   const [desc, setdesc] = useState('')
+  const [fav, setfav] = useState(false)
   const slideUp = () => {
     Animated.timing(translateY, {
       toValue: 0, // Adjust this value to control the distance of the slide-up
@@ -28,17 +29,17 @@ export default function NewTask({ color, close }) {
       useNativeDriver: true,
     }).start()
   }
-  const slideUp2 = () => {
-    Animated.timing(slide, {
-      toValue: 0, // Adjust this value to control the distance of the slide-up
-      duration: 100, // Duration of the animation in milliseconds
-      useNativeDriver: true,
-    }).start()
-  }
   useEffect(() => {
     slideUp() // Trigger the slide-up animation when the component mounts
-    slideUp2()
   }, [])
+
+  useEffect(() => {
+    !descState && InputRef.current !== null && InputRef.current.focus()
+  }, [descState])
+
+  const AddTask = () => {
+    
+  }
 
   return (
     <>
@@ -62,24 +63,29 @@ export default function NewTask({ color, close }) {
           placeholder={'New Task'}
           maxLength={50}
           size={18}
-          padding={'0'}
+          padding={3}
+          autoCapitalize={'sentences'}
         />
         {descState && (
-          <Animated.View style={{ transform: [{ slide }] }}>
-            <InputText
-              InputRef={DescRef}
-              text={desc}
-              handleTextChange={(e) => setdesc(e.value)}
-              color={color}
-              placeholder={'Description'}
-              maxLength={50}
-              size={13}
-              padding={'0'}
-            />
-          </Animated.View>
+          <InputText
+            InputRef={DescRef}
+            text={desc}
+            handleTextChange={(e) => setdesc(e.value)}
+            color={color}
+            placeholder={'Add description'}
+            maxLength={50}
+            size={15}
+            padding={'0'}
+            autoFocus={true}
+            opacity={0.8}
+            autoCapitalize={'sentences'}
+          />
         )}
         <View style={styles.options}>
-          <TouchableWithoutFeedback
+          <TouchableMadeEasier
+            round={10}
+            width={30}
+            color={color}
             onPress={() => {
               setdescState(!descState)
             }}
@@ -89,8 +95,31 @@ export default function NewTask({ color, close }) {
               size={18}
               color={color?.accentColor}
             />
-          </TouchableWithoutFeedback>
-          <FontAwesome6 name='star' size={18} color={color?.accentColor} />
+          </TouchableMadeEasier>
+          <TouchableMadeEasier
+            round={10}
+            width={30}
+            color={color}
+            onPress={() => setfav(!fav)}
+          >
+            {fav ? (
+              <FontAwesome name='star' size={22} color={color?.accentColor} />
+            ) : (
+              <FontAwesome name='star-o' size={22} color={color?.accentColor} />
+            )}
+          </TouchableMadeEasier>
+          <TouchableMadeEasier
+            round={10}
+            padding={[10]}
+            style={styles.done}
+            styleParent={styles.doneParent}
+            color={color}
+            onPress={() => AddTask}
+          >
+            <Text style={[styles.done, { color: color?.accentColor }]}>
+              Done
+            </Text>
+          </TouchableMadeEasier>
         </View>
       </Animated.View>
     </>
@@ -113,17 +142,32 @@ const styles = StyleSheet.create({
     zIndex: 200,
     marginVertical: 20,
     marginHorizontal: '4%',
-    paddingVertical: 15,
+    paddingTop: 20,
+    paddingBottom: 5,
     paddingHorizontal: 3,
     bottom: 0,
     borderRadius: 14,
-    gap: 10,
+    gap: 4,
   },
   options: {
-    paddingHorizontal: 13,
-    paddingTop: 10,
+    paddingHorizontal: 5,
     flexDirection: 'row',
-    paddingBottom: 10,
-    gap: 20,
+    gap: 10,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  done: {
+    textAlign: 'right',
+    fontFamily: 'Nunito_700Bold',
+    fontSize: 18,
+    paddingHorizontal: 20,
+    overflow: 'hidden',
+    borderRadius: 1000,
+  },
+  doneParent: {
+    flex: 1,
+    alignItems: 'flex-end',
+    width: 100,
   },
 })
