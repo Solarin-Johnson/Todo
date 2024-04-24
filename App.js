@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { loadData, removeItemFromStorage } from './utils/store'
+import { loadData, removeItemFromStorage } from './src/utils/store'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { NavigationContainer } from '@react-navigation/native'
 
-import { DarkMode, LightMode } from './styles/colors'
-import WelcomeScreen from './screens/WelcomeScreen'
-import HomeScreen from './screens/HomeScreen'
+import { DarkMode, LightMode } from './src/styles/colors'
+import WelcomeScreen from './src/screens/WelcomeScreen'
+import HomeScreen from './src/screens/HomeScreen'
 
 import * as SystemUI from 'expo-system-ui'
 import {
