@@ -34,4 +34,5 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-%Program
+# Ignore all folders starting with %
+%*/
