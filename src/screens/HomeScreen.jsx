@@ -15,13 +15,15 @@ import { loadData, removeItemFromStorage } from '../utils/store'
 import { FontAwesome6 } from '@expo/vector-icons'
 import NoTask from '../components/NoTask'
 import NewTask from '../components/NewTask'
+import Header from '../navigation/Header'
+import TaskList from '../components/Tasks'
 
 export default HomeScreen = ({ route }) => {
   const navigation = useNavigation()
   const { color } = route.params
   const [isBackPressed, setIsBackPressed] = useState(false)
   const [uname, setuname] = useState()
-  const [tasks, settasks] = useState()
+  const [tasks, settasks] = useState([])
   const [newTask, setnewTask] = useState(false)
   // removeItemFromStorage('tasks')
   const CheckUname = async () => {
@@ -35,8 +37,7 @@ export default HomeScreen = ({ route }) => {
   const LoadTasks = async () => {
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
-      console.log('loadtask', loadTask)
-      settasks(loadTask)
+      settasks(JSON.parse(loadTask))
     } else {
       settasks(false)
     }
@@ -48,8 +49,6 @@ export default HomeScreen = ({ route }) => {
     CheckUname()
     LoadTasks()
   }, [])
-
-  console.log('tasks', tasks)
 
   useBackHandler(() => {
     if (isBackPressed) {
@@ -69,36 +68,28 @@ export default HomeScreen = ({ route }) => {
       <SafeAreaView
         style={[{ backgroundColor: color?.fgColor }, styles.container]}
       >
-        <View style={styles.head}>
-          {uname && (
-            <Text style={[styles.greetings, { color: color?.primaryColor }]}>
-              {greetings()} <Truncate text={uname} />
-            </Text>
-          )}
-          <FontAwesome6
-            name='bars-staggered'
-            size={24}
-            color={color?.textColor}
-          />
-        </View>
-
-        {!tasks ? <NoTask color={color} /> : <Text>Okay</Text>}
+        <Header color={color} uname={uname} />
+        {!tasks ? (
+          <NoTask color={color} />
+        ) : (
+          <TaskList tasks={tasks} color={color} />
+        )}
         <View
           style={[
             { backgroundColor: color?.accentColor },
             styles.plusContainer,
           ]}
         >
-          {!newTask && (
+          {
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple('#33333', false)}
-              onPress={() => setnewTask(!newTask)}
+              onPress={() => setnewTask(true)}
             >
               <View style={styles.plus}>
                 <FontAwesome6 name='plus' size={24} color={color?.bgColor} />
               </View>
             </TouchableNativeFeedback>
-          )}
+          }
         </View>
       </SafeAreaView>
     </>
@@ -108,25 +99,16 @@ export default HomeScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingTop: 10,
   },
-  greetings: {
-    fontSize: 22,
-    fontFamily: 'Nunito_700Bold',
-  },
+
   defText: {
     fontFamily: 'Nunito_500Medium',
   },
-  head: {
-    paddingTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
+
   plusContainer: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 50,
     right: 30,
     borderRadius: 200,
     overflow: 'hidden',

@@ -27,3 +27,7 @@ export const Truncate = ({ text }) => {
 export const isAlphanumeric = (inputText) => {
   return /^[a-zA-Z0-9]+$/.test(inputText)
 }
+
+export const FocusInput = (ref) => {
+  ref.current !== null && ref.current.focus()
+}

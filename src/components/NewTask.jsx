@@ -13,6 +13,7 @@ import InputText from './Input'
 import { FontAwesome5, FontAwesome6, FontAwesome } from '@expo/vector-icons'
 import TouchableMadeEasier from './touchables'
 import { loadData, saveData } from '../utils/store'
+import { FocusInput } from '../utils'
 
 export default function NewTask({ color, close }) {
   const translateY = useRef(new Animated.Value(300)).current
@@ -35,23 +36,22 @@ export default function NewTask({ color, close }) {
   }, [])
 
   useEffect(() => {
-    !descState && InputRef.current !== null && InputRef.current.focus()
+    // !descState
   }, [descState])
 
   const AddTask = async (e) => {
-    console.log('omo')
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
+      close(false)
       const tasks = JSON.parse(loadTask)
-      tasks.push({ title: input, desc: desc, fav: fav })
+      tasks.push({ id: tasks.length, title: input, desc: desc, fav: fav })
       await saveData('tasks', JSON.stringify(tasks))
     } else {
       await saveData(
         'tasks',
-        JSON.stringify([{ title: input, desc: desc, fav: fav }]),
+        JSON.stringify([{ id: 0, title: input, desc: desc, fav: fav }]),
       )
     }
-    close(false)
   }
 
   return (
@@ -100,6 +100,7 @@ export default function NewTask({ color, close }) {
             width={30}
             color={color}
             onPress={() => {
+              FocusInput(InputRef)
               setdescState(!descState)
             }}
           >
