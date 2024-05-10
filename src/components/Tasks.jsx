@@ -13,7 +13,6 @@ import TaskNav from '../navigation/TasksNav'
 import { TaskCard } from './TaskCard'
 
 import DraggableFlatList from 'react-native-draggable-flatlist'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { saveData } from '../utils/store'
 
 export default function TaskList({ tasks, color }) {
@@ -87,7 +86,7 @@ export default function TaskList({ tasks, color }) {
   }
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={[
           styles.head,
@@ -178,7 +177,7 @@ export default function TaskList({ tasks, color }) {
         )}
         {/* </View> */}
       </ScrollView>
-    </GestureHandlerRootView>
+    </View>
   )
 }
 

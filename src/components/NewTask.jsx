@@ -15,7 +15,6 @@ import TouchableMadeEasier from './touchables'
 import { loadData, saveData } from '../utils/store'
 import { FocusInput } from '../utils'
 import { useBackHandler } from '@react-native-community/hooks'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function NewTask({ color, close }) {
   const translateY = useRef(new Animated.Value(300)).current
@@ -52,8 +51,8 @@ export default function NewTask({ color, close }) {
       await saveData(
         'tasks',
         JSON.stringify([{ id: 0, title: input, desc: desc, fav: fav }]),
-        close(false),
       )
+      close(false)
     }
   }
 
@@ -157,6 +156,7 @@ const styles = StyleSheet.create({
     height: '100%',
     zIndex: 100,
     opacity: 0.15,
+    // zIndex: 1000,
   },
   container: {
     position: 'absolute',
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     borderRadius: 14,
     gap: 4,
+    zIndex: 200,
   },
   options: {
     paddingHorizontal: 5,

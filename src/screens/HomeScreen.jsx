@@ -17,6 +17,7 @@ import NoTask from '../components/NoTask'
 import NewTask from '../components/NewTask'
 import Header from '../navigation/Header'
 import TaskList from '../components/Tasks'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default HomeScreen = ({ route }) => {
   const navigation = useNavigation()
@@ -66,17 +67,16 @@ export default HomeScreen = ({ route }) => {
   })
 
   return (
-    <>
-      {newTask && <NewTask color={color} close={setnewTask} />}
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView
         style={[{ backgroundColor: color?.fgColor }, styles.container]}
       >
         <Header color={color} uname={uname} />
-        {/* {!tasks ? (
+        {!tasks ? (
           <NoTask color={color} />
         ) : (
           <TaskList tasks={tasks} color={color} />
-        )} */}
+        )}
         <View
           style={[
             { backgroundColor: color?.accentColor },
@@ -95,7 +95,8 @@ export default HomeScreen = ({ route }) => {
           )}
         </View>
       </SafeAreaView>
-    </>
+      {newTask && <NewTask color={color} close={setnewTask} />}
+    </GestureHandlerRootView>
   )
 }
 
