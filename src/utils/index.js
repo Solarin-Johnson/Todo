@@ -35,3 +35,9 @@ export const isAlphanumeric = (inputText) => {
 export const FocusInput = (ref) => {
   ref.current !== null && ref.current.focus()
 }
+
+export function replaceFavouriteStateAtIndex(objectsArray, id, newState) {
+  return objectsArray.map((obj) =>
+    obj.id === id ? { ...obj, fav: newState } : obj,
+  )
+}

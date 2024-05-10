@@ -15,6 +15,7 @@ import TouchableMadeEasier from './touchables'
 import { loadData, saveData } from '../utils/store'
 import { FocusInput } from '../utils'
 import { useBackHandler } from '@react-native-community/hooks'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 export default function NewTask({ color, close }) {
   const translateY = useRef(new Animated.Value(300)).current

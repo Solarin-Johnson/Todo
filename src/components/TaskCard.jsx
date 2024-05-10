@@ -6,23 +6,47 @@ import Animated, {
   FlipInEasyX,
   FlipOutEasyX,
   LightSpeedOutLeft,
+  LightSpeedInRight,
 } from 'react-native-reanimated'
 import TouchableMadeEasier from './touchables'
-import { Truncate } from '../utils'
+import { replaceFavouriteStateAtIndex, Truncate } from '../utils'
 
-export const TaskCard = ({ index, data, drag, isActive, color }) => {
+export const TaskCard = ({
+  index,
+  data,
+  setData,
+  drag,
+  isActive,
+  color,
+  base,
+}) => {
   const [fav, setfav] = useState()
   useEffect(() => {
     setfav(data.fav)
   }, [data])
 
+  const toggleFavourite = () => {
+    setData(replaceFavouriteStateAtIndex(base, data.id, !fav))
+    console.log(replaceFavouriteStateAtIndex(base, data.id, !fav))
+    setfav(!fav)
+  }
+
   return (
-    <View style={[styles.container, isActive && { opacity: 0.7 }]}>
+    <Animated.View
+      entering={LightSpeedInRight}
+      exiting={LightSpeedOutLeft}
+      style={[styles.container, isActive && { opacity: 0.7 }]}
+    >
       <TouchableWithoutFeedback
         style={[styles.child, { backgroundColor: color?.fgColor }]}
         onLongPress={drag}
       >
-        <TouchableMadeEasier round={true} width={40} color={color}>
+        <TouchableMadeEasier
+          round={true}
+          width={40}
+          color={color}
+          onPress={toggleFavourite}
+        >
           {fav ? (
             <Octicons name='star-fill' size={20} color={color?.accentColor} />
           ) : (
@@ -40,7 +64,7 @@ export const TaskCard = ({ index, data, drag, isActive, color }) => {
           <Octicons name='trash' size={22} color={color?.textColor + 'AB'} />
         </TouchableMadeEasier>
       </TouchableWithoutFeedback>
-    </View>
+    </Animated.View>
   )
 }
 
@@ -50,7 +74,7 @@ const styles = StyleSheet.create({
     shadowColor: '#194B7DA8',
     width: '85%',
     alignSelf: 'center',
-    marginVertical: 8,
+    marginVertical: 12,
     borderRadius: 16,
     overflow: 'hidden',
     borderColor: '#EEF2F7',

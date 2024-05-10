@@ -26,9 +26,13 @@ export default function TaskList({ tasks, color }) {
   const { width: screenWidth } = useWindowDimensions()
 
   useEffect(() => {
-    setfavourites(tasks.filter((item) => item.fav === true))
     setdata(tasks)
   }, [tasks])
+
+  useEffect(() => {
+    setfavourites(data.filter((item) => item.fav === true))
+    console.log('did it?')
+  }, [data])
 
   const calculateScrollPercentage = () => {
     // Calculate the percentage of scroll
@@ -77,6 +81,11 @@ export default function TaskList({ tasks, color }) {
     saveData('tasks', JSON.stringify(data))
   }
 
+  const updateState = (x) => {
+    setdata(x)
+    saveData('tasks', JSON.stringify(x))
+  }
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <View
@@ -119,27 +128,27 @@ export default function TaskList({ tasks, color }) {
         alwaysBounceHorizontal
         contentContainerStyle={styles.scroll}
       >
-        {/* <View }> */}
-        {favourites.length > 0 && (
-          <DraggableFlatList
-            contentContainerStyle={[styles.page, { width: screenWidth }]}
-            data={favourites}
-            horizontal={false}
-            renderItem={({ item, isActive, drag, getIndex }) => (
-              <TaskCard
-                data={item}
-                drag={drag}
-                isActive={isActive}
-                color={color}
-                index={getIndex()}
-              />
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            onDragEnd={handleDragEnd}
-            nestedScrollEnabled={true}
-          />
-        )}
-        {/* </View> */}
+        <View style={[styles.page, { width: screenWidth }]}>
+          {favourites.length > 0 && (
+            <FlatList
+              data={favourites}
+              horizontal={false}
+              renderItem={({ item, isActive, drag, index }) => (
+                <TaskCard
+                  data={item}
+                  drag={drag}
+                  isActive={isActive}
+                  color={color}
+                  index={index}
+                  base={data}
+                  setData={updateState}
+                />
+              )}
+              nestedScrollEnabled={true}
+            />
+          )}
+        </View>
+        {/* <View style={[styles.page, { width: screenWidth }]}> */}
         {/* {tasks.length > 0 && (
               <FlatList
               data={tasks}
@@ -149,8 +158,8 @@ export default function TaskList({ tasks, color }) {
             )} */}
         {data.length > 0 && (
           <DraggableFlatList
-            contentContainerStyle={[styles.page, { width: screenWidth }]}
             data={data}
+            containerStyle={[styles.page, { width: screenWidth }]}
             renderItem={({ item, isActive, drag, getIndex }) => (
               <TaskCard
                 data={item}
@@ -158,6 +167,8 @@ export default function TaskList({ tasks, color }) {
                 isActive={isActive}
                 color={color}
                 index={getIndex()}
+                base={data}
+                setData={updateState}
               />
             )}
             keyExtractor={(item) => item.id.toString()}
@@ -165,6 +176,7 @@ export default function TaskList({ tasks, color }) {
             nestedScrollEnabled={true}
           />
         )}
+        {/* </View> */}
       </ScrollView>
     </GestureHandlerRootView>
   )

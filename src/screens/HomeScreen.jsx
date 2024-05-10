@@ -49,6 +49,7 @@ export default HomeScreen = ({ route }) => {
     CheckUname()
     LoadTasks()
   }, [])
+  console.log('newtask', newTask)
 
   useBackHandler(() => {
     if (!newTask) {
@@ -71,11 +72,11 @@ export default HomeScreen = ({ route }) => {
         style={[{ backgroundColor: color?.fgColor }, styles.container]}
       >
         <Header color={color} uname={uname} />
-        {!tasks ? (
+        {/* {!tasks ? (
           <NoTask color={color} />
         ) : (
           <TaskList tasks={tasks} color={color} />
-        )}
+        )} */}
         <View
           style={[
             { backgroundColor: color?.accentColor },
