@@ -9,6 +9,7 @@ export default function TouchableMadeEasier({
   style,
   styleParent,
   color,
+  rippleColor,
 }) {
   return (
     <View
@@ -25,7 +26,7 @@ export default function TouchableMadeEasier({
       <TouchableNativeFeedback
         onPress={onPress}
         background={TouchableNativeFeedback.Ripple(
-          color?.accentColor + '00',
+          rippleColor ? rippleColor : color?.accentColor + '00',
           false,
         )}
       >

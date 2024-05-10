@@ -32,7 +32,7 @@ export default function TaskList({ tasks, color }) {
 
   const calculateScrollPercentage = () => {
     // Calculate the percentage of scroll
-    const totalWidth = screenWidth * 1.8 // Total width of all pages
+    const totalWidth = screenWidth * 1.84 // Total width of all pages
     const scrollValue = Animated.divide(scrollX, totalWidth)
     return Animated.multiply(scrollValue, 100)
   }
@@ -119,52 +119,52 @@ export default function TaskList({ tasks, color }) {
         alwaysBounceHorizontal
         contentContainerStyle={styles.scroll}
       >
-        <View style={[styles.page, { width: screenWidth }]}>
-          {favourites.length > 0 && (
-            <DraggableFlatList
-              contentContainerStyle={{ gap: 15 }}
-              data={favourites}
-              horizontal={false}
-              renderItem={({ item, isActive, drag }) => (
-                <TaskCard
-                  data={item}
-                  drag={drag}
-                  isActive={isActive}
-                  color={color}
-                />
-              )}
-              keyExtractor={(item) => item.id.toString()}
-              onDragEnd={handleDragEnd}
-              nestedScrollEnabled={true}
-            />
-          )}
-        </View>
-        <View style={[styles.page, { width: screenWidth }]}>
-          {/* {tasks.length > 0 && (
+        {/* <View }> */}
+        {favourites.length > 0 && (
+          <DraggableFlatList
+            contentContainerStyle={[styles.page, { width: screenWidth }]}
+            data={favourites}
+            horizontal={false}
+            renderItem={({ item, isActive, drag, getIndex }) => (
+              <TaskCard
+                data={item}
+                drag={drag}
+                isActive={isActive}
+                color={color}
+                index={getIndex()}
+              />
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            onDragEnd={handleDragEnd}
+            nestedScrollEnabled={true}
+          />
+        )}
+        {/* </View> */}
+        {/* {tasks.length > 0 && (
               <FlatList
               data={tasks}
               renderItem={({ item }) => <TaskCard data={item} />}
               keyExtractor={(data) => data?.id?.toString()}
               />
             )} */}
-          {data.length > 0 && (
-            <DraggableFlatList
-              contentContainerStyle={{ gap: 15 }}
-              data={data}
-              renderItem={({ item, isActive, drag }) => (
-                <TaskCard
-                  data={item}
-                  drag={drag}
-                  isActive={isActive}
-                  color={color}
-                />
-              )}
-              keyExtractor={(item) => item.id.toString()}
-              onDragEnd={handleDragEnd}
-              nestedScrollEnabled={true}
-            />
-          )}
-        </View>
+        {data.length > 0 && (
+          <DraggableFlatList
+            contentContainerStyle={[styles.page, { width: screenWidth }]}
+            data={data}
+            renderItem={({ item, isActive, drag, getIndex }) => (
+              <TaskCard
+                data={item}
+                drag={drag}
+                isActive={isActive}
+                color={color}
+                index={getIndex()}
+              />
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            onDragEnd={handleDragEnd}
+            nestedScrollEnabled={true}
+          />
+        )}
       </ScrollView>
     </GestureHandlerRootView>
   )
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
   page: {
     height: '100%',
     flex: 1,
+    marginTop: 20,
   },
   line: {
     // position: 'absolute',

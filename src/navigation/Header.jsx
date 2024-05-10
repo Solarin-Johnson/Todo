@@ -13,7 +13,7 @@ export default Header = ({ uname, color }) => {
     <View style={styles.head}>
       {uname && (
         <Text style={[styles.greetings, { color: color?.primaryColor }]}>
-          {greetings()} <Truncate text={uname} />
+          {greetings()}, <Truncate text={uname} />
         </Text>
       )}
       <FontAwesome6 name='bars-staggered' size={24} color={color?.textColor} />
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   greetings: {
-    fontSize: 22,
-    fontFamily: 'Nunito_700Bold',
+    fontSize: 23,
+    fontFamily: 'Nunito_600SemiBold',
   },
 })

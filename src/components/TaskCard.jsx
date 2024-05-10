@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { FontAwesome } from '@expo/vector-icons'
+import { Entypo, FontAwesome6, Octicons } from '@expo/vector-icons'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Animated, {
   FlipInEasyX,
   FlipOutEasyX,
   LightSpeedOutLeft,
 } from 'react-native-reanimated'
+import TouchableMadeEasier from './touchables'
+import { Truncate } from '../utils'
 
 export const TaskCard = ({ index, data, drag, isActive, color }) => {
   const [fav, setfav] = useState()
@@ -15,28 +17,30 @@ export const TaskCard = ({ index, data, drag, isActive, color }) => {
   }, [data])
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        isActive && { transform: [{ scale: 1.1 }] },
-        { backgroundColor: color?.fgColor },
-      ]}
-      exiting={LightSpeedOutLeft}
-    >
-      <TouchableWithoutFeedback onLongPress={drag}>
-        <View>
-          <Text>{data.title}</Text>
+    <View style={[styles.container, isActive && { opacity: 0.7 }]}>
+      <TouchableWithoutFeedback
+        style={[styles.child, { backgroundColor: color?.fgColor }]}
+        onLongPress={drag}
+      >
+        <TouchableMadeEasier round={true} width={40} color={color}>
+          {fav ? (
+            <Octicons name='star-fill' size={20} color={color?.accentColor} />
+          ) : (
+            <Octicons name='star' size={20} color={color?.textColor + 'AB'} />
+          )}
+        </TouchableMadeEasier>
+        <View style={styles.body}>
+          <Text style={styles.title}>
+            <Truncate text={data.title} limit={15} />
+          </Text>
+          {data.desc && <Text style={styles.desc}>{data.desc}</Text>}
           {/* <Text>{data.desc}</Text> */}
         </View>
-        <View>
-          <FontAwesome
-            name='star'
-            size={20}
-            color={fav ? color?.accentColor : color?.textColor + '99'}
-          />
-        </View>
+        <TouchableMadeEasier round={true} width={40} color={color}>
+          <Octicons name='trash' size={22} color={color?.textColor + 'AB'} />
+        </TouchableMadeEasier>
       </TouchableWithoutFeedback>
-    </Animated.View>
+    </View>
   )
 }
 
@@ -46,11 +50,35 @@ const styles = StyleSheet.create({
     shadowColor: '#194B7DA8',
     width: '85%',
     alignSelf: 'center',
-    marginVertical: 20,
-    height: 200,
-    justifyContent: 'center',
+    marginVertical: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderColor: '#EEF2F7',
+    borderWidth: 1,
+    height: 80,
+  },
+  child: {
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 20,
+    height: 80,
+    gap: 12,
+  },
+  body: {
+    flex: 1,
+    gap: 5,
+  },
+  title: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 16,
+  },
+  desc: {
+    opacity: 0.8,
+    fontSize: 12,
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 12,
   },
   status: {},
   fav: {},

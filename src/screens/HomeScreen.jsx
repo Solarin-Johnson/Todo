@@ -51,14 +51,16 @@ export default HomeScreen = ({ route }) => {
   }, [])
 
   useBackHandler(() => {
-    if (isBackPressed) {
-      BackHandler.exitApp()
-      return true // Prevent default behavior
-    } else {
-      ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT)
-      setIsBackPressed(true) // Set flag to true
-      setTimeout(() => setIsBackPressed(false), 2000) // Reset flag after 2 seconds
-      return true // Prevent default behavior
+    if (!newTask) {
+      if (isBackPressed) {
+        BackHandler.exitApp()
+        return true // Prevent default behavior
+      } else {
+        ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT)
+        setIsBackPressed(true) // Set flag to true
+        setTimeout(() => setIsBackPressed(false), 2000) // Reset flag after 2 seconds
+        return true // Prevent default behavior
+      }
     }
   })
 
@@ -80,7 +82,7 @@ export default HomeScreen = ({ route }) => {
             styles.plusContainer,
           ]}
         >
-          {
+          {!newTask && (
             <TouchableNativeFeedback
               background={TouchableNativeFeedback.Ripple('#33333', false)}
               onPress={() => setnewTask(true)}
@@ -89,7 +91,7 @@ export default HomeScreen = ({ route }) => {
                 <FontAwesome6 name='plus' size={24} color={color?.bgColor} />
               </View>
             </TouchableNativeFeedback>
-          }
+          )}
         </View>
       </SafeAreaView>
     </>

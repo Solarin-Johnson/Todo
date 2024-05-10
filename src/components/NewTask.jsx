@@ -14,6 +14,7 @@ import { FontAwesome5, FontAwesome6, FontAwesome } from '@expo/vector-icons'
 import TouchableMadeEasier from './touchables'
 import { loadData, saveData } from '../utils/store'
 import { FocusInput } from '../utils'
+import { useBackHandler } from '@react-native-community/hooks'
 
 export default function NewTask({ color, close }) {
   const translateY = useRef(new Animated.Value(300)).current
@@ -42,17 +43,23 @@ export default function NewTask({ color, close }) {
   const AddTask = async (e) => {
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
-      close(false)
       const tasks = JSON.parse(loadTask)
       tasks.push({ id: tasks.length, title: input, desc: desc, fav: fav })
       await saveData('tasks', JSON.stringify(tasks))
+      close(false)
     } else {
       await saveData(
         'tasks',
         JSON.stringify([{ id: 0, title: input, desc: desc, fav: fav }]),
+        close(false),
       )
     }
   }
+
+  useBackHandler(() => {
+    close(false)
+    return true
+  })
 
   return (
     <>
@@ -128,7 +135,7 @@ export default function NewTask({ color, close }) {
             style={styles.done}
             styleParent={styles.doneParent}
             color={color}
-            onPress={() => AddTask()}
+            onPress={() => input && AddTask()}
           >
             <Text style={[styles.done, { color: color?.accentColor }]}>
               Done

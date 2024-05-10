@@ -10,15 +10,19 @@ export const greetings = () => {
     greeting = 'Good morning'
   } else if (currentHour >= 12 && currentHour < 18) {
     greeting = 'Good afternoon'
+  } else if (currentHour >= 18 && currentHour < 22) {
+    greeting = 'Good afternoon'
   } else {
-    greeting = 'Good evening'
+    greeting = 'Happy latenight'
   }
   return greeting
 }
 
-export const Truncate = ({ text }) => {
+export const Truncate = ({ text, limit }) => {
   const windowWidth = useWindowDimensions().width
-  const maxChars = Math.floor((windowWidth - 20) / 45)
+  const maxChars = Math.floor(
+    (windowWidth - 20) / (limit !== undefined ? limit : 45),
+  )
   const truncatedText =
     text.length > maxChars ? `${text.substring(0, maxChars)}...` : text
   return truncatedText
