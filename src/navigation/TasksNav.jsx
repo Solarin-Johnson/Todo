@@ -31,7 +31,7 @@ export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
     setfav(true)
   }
   const clickTasks = () => {
-    scrollRef.scrollToEnd({ animated: true })
+    scrollRef.scrollTo({x:400, animated: true })
     settask(true)
   }
 

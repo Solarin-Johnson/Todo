@@ -12,10 +12,11 @@ import {
 import TaskNav from '../navigation/TasksNav'
 import { TaskCard } from './TaskCard'
 
-import DraggableFlatList from 'react-native-draggable-flatlist'
+import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from 'react-native-draggable-flatlist'
 import { saveData } from '../utils/store'
+import NoTask from './NoTask'
 
-export default function TaskList({ tasks, color }) {
+export default function TaskList({ tasks, color, empty }) {
   const scrollX = useRef(new Animated.Value(0)).current
   const adjWidth = useRef(new Animated.Value(20)).current
   const [favourites, setfavourites] = useState([])
@@ -28,22 +29,24 @@ export default function TaskList({ tasks, color }) {
     setdata(tasks)
   }, [tasks])
 
+  console.log(data);
+
   useEffect(() => {
     setfavourites(data.filter((item) => item.fav === true))
-    console.log('did it?')
+    
   }, [data])
 
   const calculateScrollPercentage = () => {
     // Calculate the percentage of scroll
-    const totalWidth = screenWidth * 1.84 // Total width of all pages
+    const totalWidth = screenWidth * 1.82 // Total width of all pages
     const scrollValue = Animated.divide(scrollX, totalWidth)
     return Animated.multiply(scrollValue, 100)
   }
 
   const calculateWidth = () => {
-    const totalWidth = screenWidth / 2
+    const totalWidth = screenWidth
     const scrollValue = Animated.divide(adjWidth, totalWidth)
-    return Animated.multiply(scrollValue, 30)
+    return Animated.multiply(scrollValue, 100)
   }
 
   const handleScroll = Animated.event(
@@ -71,9 +74,6 @@ export default function TaskList({ tasks, color }) {
 
     AsyncStorage.setItem('listData', JSON.stringify(newData))
   }
-  useEffect(() => {
-    scrollRef.current.scrollToEnd({ animated: false })
-  }, [])
 
   const handleDragEnd = ({ data }) => {
     setdata(data)
@@ -82,7 +82,13 @@ export default function TaskList({ tasks, color }) {
 
   const updateState = (x) => {
     setdata(x)
-    saveData('tasks', JSON.stringify(x))
+    if(x.length <=0 ){
+      saveData('tasks', '')
+    }
+    else{
+      saveData('tasks', JSON.stringify(x))
+
+    }
   }
 
   return (
@@ -114,24 +120,25 @@ export default function TaskList({ tasks, color }) {
         ref={scrollRef}
         horizontal
         pagingEnabled
+        onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: false })}
         showsHorizontalScrollIndicator={false}
         onScroll={(e) => {
           handleScroll(e)
           handleScrollWidth(e)
           getScrollLeft(e)
         }}
-        scrollEventThrottle={-100}
-        snapToOffsets={[0, screenWidth]} // Snap to each page
-        decelerationRate='fast'
+        scrollEventThrottle={0}
+        snapToOffsets={[0, screenWidth + 100]} // Snap to each page
         overScrollMode='never'
-        alwaysBounceHorizontal
+        decelerationRate='fast'
         contentContainerStyle={styles.scroll}
-      >
-        <View style={[styles.page, { width: screenWidth }]}>
-          {favourites.length > 0 && (
+        >
+        <View style={{ width: screenWidth }}>
+          {favourites.length > 0 ? (
             <FlatList
-              data={favourites}
-              horizontal={false}
+            alwaysBounceHorizontal
+            contentContainerStyle={styles.page}
+            data={favourites}
               renderItem={({ item, isActive, drag, index }) => (
                 <TaskCard
                   data={item}
@@ -141,24 +148,21 @@ export default function TaskList({ tasks, color }) {
                   index={index}
                   base={data}
                   setData={updateState}
+                  fav={true}
                 />
               )}
               nestedScrollEnabled={true}
             />
-          )}
+          )
+          :
+          <NoTask color={color} text={'Mark important tasks with a star to see them here'}/>
+        
+        }
         </View>
-        {/* <View style={[styles.page, { width: screenWidth }]}> */}
-        {/* {tasks.length > 0 && (
-              <FlatList
-              data={tasks}
-              renderItem={({ item }) => <TaskCard data={item} />}
-              keyExtractor={(data) => data?.id?.toString()}
-              />
-            )} */}
         {data.length > 0 && (
-          <DraggableFlatList
+          <NestableScrollContainer style={[styles.page, {width: screenWidth}]}>
+          <NestableDraggableFlatList
             data={data}
-            containerStyle={[styles.page, { width: screenWidth }]}
             renderItem={({ item, isActive, drag, getIndex }) => (
               <TaskCard
                 data={item}
@@ -173,7 +177,9 @@ export default function TaskList({ tasks, color }) {
             keyExtractor={(item) => item.id.toString()}
             onDragEnd={handleDragEnd}
             nestedScrollEnabled={true}
+            
           />
+          </NestableScrollContainer>
         )}
         {/* </View> */}
       </ScrollView>
@@ -200,6 +206,7 @@ const styles = StyleSheet.create({
     // left: 0,
     height: 3,
     minWidth: 24,
+    maxWidth:60,
     marginLeft: 23,
     borderTopLeftRadius: 10000,
     borderTopRightRadius: 10000,

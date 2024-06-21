@@ -24,7 +24,7 @@ export default HomeScreen = ({ route }) => {
   const { color } = route.params
   const [isBackPressed, setIsBackPressed] = useState(false)
   const [uname, setuname] = useState()
-  const [tasks, settasks] = useState([])
+  const [tasks, settasks] = useState('')
   const [newTask, setnewTask] = useState(false)
   // removeItemFromStorage('tasks')
   const CheckUname = async () => {
@@ -72,10 +72,10 @@ export default HomeScreen = ({ route }) => {
         style={[{ backgroundColor: color?.fgColor }, styles.container]}
       >
         <Header color={color} uname={uname} />
-        {!tasks ? (
+        {!tasks || tasks.length < 1 ? (
           <NoTask color={color} />
         ) : (
-          <TaskList tasks={tasks} color={color} />
+          <TaskList tasks={tasks} color={color} empty={(e)=> e && settasks('')}/>
         )}
         <View
           style={[

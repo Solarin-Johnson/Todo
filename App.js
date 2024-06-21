@@ -81,7 +81,6 @@ export default function App() {
               gestureEnabled: true,
               // gestureDirection: 'horizontal',
               headerShown: false,
-              cardStyle: { backgroundColor: 'red' }, // Set background color here
               cardOverlayEnabled: true,
               animationEnabled: true,
             }}

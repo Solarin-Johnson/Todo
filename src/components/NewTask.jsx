@@ -43,8 +43,9 @@ export default function NewTask({ color, close }) {
   const AddTask = async (e) => {
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
+      console.log('testing',loadTask);
       const tasks = JSON.parse(loadTask)
-      tasks.push({ id: tasks.length, title: input, desc: desc, fav: fav })
+      tasks.push({ id: parseInt(tasks[tasks.length -1].id) + 1, title: input, desc: desc, fav: fav })
       await saveData('tasks', JSON.stringify(tasks))
       close(false)
     } else {

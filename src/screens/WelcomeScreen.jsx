@@ -36,7 +36,7 @@ export default WelcomeScreen = ({ route }) => {
 
   if (color) {
     return (
-      <SafeAreaView style={responsive.container}>
+      <SafeAreaView style={[responsive.container, styles.container]}>
         {!welcome ? (
           <EnterName responsive={responsive} color={color} />
         ) : (
@@ -63,23 +63,24 @@ export const EnterName = ({ responsive, color }) => {
   }
 
   return (
+    <>
     <View style={styles.subContainer}>
       <Text style={[styles.title, responsive.text]}>Hello there!</Text>
-      <Text
+      {/* <Text
         style={[
           styles.subTitle,
           responsive.text,
-          { fontFamily: 'Raleway_500Medium', fontSize: 28 },
+          { fontFamily: 'Raleway_500Medium', fontSize: 24 },
         ]}
       >
         Welcome
-      </Text>
+      </Text> */}
       <Text
         style={[
           styles.subTitle,
           { opacity: 0.7 },
           responsive.text,
-          { fontFamily: 'Raleway_400Regular' },
+          { fontFamily: 'Raleway_400Regular', paddingTop: 10, fontSize: 16},
         ]}
       >
         Enter your name to continue to Todo
@@ -96,6 +97,7 @@ export const EnterName = ({ responsive, color }) => {
           placeholder={'Enter your display name'}
         />
       </View>
+    </View>
       {uname.length > 1 && (
         <View style={styles.buttonArea}>
           <Button
@@ -108,7 +110,7 @@ export const EnterName = ({ responsive, color }) => {
           />
         </View>
       )}
-    </View>
+      </>
   )
 }
 export const NewUser = ({ responsive, color }) => {
@@ -166,22 +168,30 @@ export const NewUser = ({ responsive, color }) => {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
   subContainer: {
     flex: 1,
+    justifyContent: 'center',
     padding: 30,
-    paddingTop: '10%',
+    paddingBottom: '10%',
+    alignContent: 'center',
+    // backgroundColor: 'red',
   },
   title: {
-    fontSize: 36,
-    fontFamily: 'Nunito_700Bold',
+    fontSize: 32,
+    // fontFamily: 'Nunito_700Bold',
     letterSpacing: -0.8,
-    paddingBottom: 10,
+    // paddingBottom: 10,
+    textAlign: 'center',
   },
   defText: {
     fontFamily: 'Nunito_500Medium',
   },
   subTitle: {
+    textAlign: 'center',
     fontSize: 14,
     fontWeight: '400',
     paddingBottom: 6,
