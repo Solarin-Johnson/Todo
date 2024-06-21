@@ -15,6 +15,7 @@ import { TaskCard } from './TaskCard'
 import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from 'react-native-draggable-flatlist'
 import { saveData } from '../utils/store'
 import NoTask from './NoTask'
+import { useAnimatedStyle, withSpring } from 'react-native-reanimated'
 
 export default function TaskList({ tasks, color, empty }) {
   const scrollX = useRef(new Animated.Value(0)).current
@@ -29,7 +30,6 @@ export default function TaskList({ tasks, color, empty }) {
     setdata(tasks)
   }, [tasks])
 
-  console.log(data);
 
   useEffect(() => {
     setfavourites(data.filter((item) => item.fav === true))
@@ -42,6 +42,15 @@ export default function TaskList({ tasks, color, empty }) {
     const scrollValue = Animated.divide(scrollX, totalWidth)
     return Animated.multiply(scrollValue, 100)
   }
+
+  const animatedLine = useAnimatedStyle(() => {
+    const translateX = calculateScrollPercentage();
+    const width = translateX; // For example purposes, you can calculate this differently
+    return {
+      transform: [{ translateX: withSpring(translateX) }],
+      width: withSpring(width),
+    };
+  });
 
   const calculateWidth = () => {
     const totalWidth = screenWidth
@@ -109,10 +118,8 @@ export default function TaskList({ tasks, color, empty }) {
           style={[
             styles.line,
             {
-              transform: [{ translateX: calculateScrollPercentage() }],
-              width: calculateWidth(),
               backgroundColor: color?.accentColor,
-            },
+            },animatedLine
           ]}
         />
       </View>

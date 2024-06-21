@@ -31,7 +31,6 @@ export const TaskCard = ({
 
   const toggleFavourite = (e) => {
     setData(replaceFavouriteStateAtIndex(base, data.id, !fav))
-    console.log(replaceFavouriteStateAtIndex(base, data.id, !fav))
     setfav(!fav)
   }
   const deleteTask = (e) => {
@@ -82,15 +81,15 @@ export const TaskCard = ({
             <Octicons name='star' size={20} color={color?.textColor + 'AB'} />
           )}
         </TouchableMadeEasier>
-        <TouchableWithoutFeedback style={{flex: 1}} onPress={()=> setSeeAll(!seeAll)}>
         <View style={styles.body} >
+        <TouchableWithoutFeedback  onPress={()=> setSeeAll(!seeAll)}>
           <Text style={[styles.title, {color: color.textColor}]}>
-            {seeAll ? <Truncate text={data.title} limit={20} /> : data.title}
+            {seeAll && data.desc ? <Truncate text={data.title} limit={20} /> : data.title}
           </Text>
           {seeAll && data.desc && <Text style={[styles.desc, {color: color.textColor}]}>{data.desc}</Text>}
           {/* <Text>{data.desc}</Text> */}
-        </View>
         </TouchableWithoutFeedback>
+        </View>
         <TouchableMadeEasier round={true} width={40} color={color} onPress={deleteTask}>
           <Octicons name='trash' size={22} color={color?.textColor + 'AB'} />
         </TouchableMadeEasier>
