@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/dev": "^0.2.3",
+    "@gorhom/bottom-sheet": "^4.6.3",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/hooks": "^3.0.0",
     "@react-navigation/native": "^6.1.17",
@@ -22,11 +23,13 @@
     "expo-system-ui": "~3.0.6",
     "react": "18.2.0",
     "react-native": "0.74.2",
+    "react-native-appearance": "^0.3.4",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-reanimated": "~3.10.1",
     "react-native-safe-area-context": "4.10.1",
     "react-native-screens": "3.31.1",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "undefined": "@expo-google-fonts/[font-family]"
   },
   "devDependencies": {

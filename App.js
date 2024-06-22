@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler'
 import { useEffect, useState } from 'react'
 
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, useColorScheme, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { loadData, removeItemFromStorage } from './src/utils/store'
@@ -13,6 +13,8 @@ import { DarkMode, LightMode } from './src/styles/colors'
 import WelcomeScreen from './src/screens/WelcomeScreen'
 import HomeScreen from './src/screens/HomeScreen'
 
+import { FontAwesome } from '@expo/vector-icons'
+
 import * as SystemUI from 'expo-system-ui'
 import {
   useFonts,
@@ -22,20 +24,47 @@ import {
   Nunito_700Bold,
   Raleway_400Regular,
   Raleway_500Medium,
+  Raleway_600SemiBold,
+  Raleway_700Bold,
 } from '@expo-google-fonts/dev'
+import { StatusBar } from 'expo-status-bar'
 
 const Stack = createNativeStackNavigator()
 export default function App() {
   const [color, setColor] = useState()
   const [uname, setUname] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const colorScheme = useColorScheme()
 
-  // removeItemFromStorage('uname')
+  removeItemFromStorage('mode')
   useEffect(() => {
     const updateColor = async () => {
-      loadInit = await loadData('mode', 'light')
-      setColor(loadInit === 'dark' ? DarkMode : LightMode)
+      loadInit = await loadData('mode', 'automatic')
+      if (loadInit === 'automatic') {
+        setColor(colorScheme === 'dark' ? DarkMode : LightMode)
+      } else {
+        setColor(
+          loadInit === 'dark' ? DarkMode : loadInit === 'light' && LightMode,
+        )
+      }
+      console.log(colorScheme)
     }
+
     updateColor()
+
+    // const loadResources = async () => {
+    //   try {
+    //     // Load FontAwesome icons
+    //     // const storedData = await AsyncStorage.getItem('myData')
+    //   } catch (error) {
+    //     console.error('Error loading resources:', error)
+    //   } finally {
+    //     setIsLoading(false)
+    //   }
+    // }
+
+    FontAwesome.loadFont()
+    // loadResources()
   }, [])
   useEffect(() => {
     const updateUi = async () => {
@@ -43,6 +72,17 @@ export default function App() {
     }
     updateUi()
   }, [color])
+
+  let [fontsLoaded] = useFonts({
+    Nunito_400Regular,
+    Nunito_500Medium,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Raleway_400Regular,
+    Raleway_500Medium,
+    Raleway_600SemiBold,
+    Raleway_700Bold,
+  })
 
   useEffect(() => {
     const CheckUname = async () => {
@@ -58,22 +98,12 @@ export default function App() {
 
   // console.log('uname:', uname)
 
-  let [fontsLoaded] = useFonts({
-    Nunito_400Regular,
-    Nunito_500Medium,
-    Nunito_600SemiBold,
-    Nunito_700Bold,
-    Raleway_400Regular,
-    Raleway_500Medium,
-  })
-
-  ;async () => {}
-
   if (!fontsLoaded) {
     return null
   } else {
     return (
       <NavigationContainer>
+        {/* <StatusBar backgroundColor='black' barStyle='light-content' /> */}
         {color && (
           <Stack.Navigator
             initialRouteName={!uname ? 'welcome' : 'home'}

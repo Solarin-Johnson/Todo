@@ -1,196 +1,260 @@
 import React, { useEffect, useRef, useState } from 'react'
 import {
   View,
-  Text,
   StyleSheet,
-  Animated,
-  ScrollView,
   useWindowDimensions,
   FlatList,
-  TouchableOpacity,
+  Dimensions,
+  TouchableWithoutFeedback,
 } from 'react-native'
 import TaskNav from '../navigation/TasksNav'
 import { TaskCard } from './TaskCard'
-
-import DraggableFlatList, { NestableDraggableFlatList, NestableScrollContainer } from 'react-native-draggable-flatlist'
+import DraggableFlatList, {
+  NestableDraggableFlatList,
+  NestableScrollContainer,
+} from 'react-native-draggable-flatlist'
 import { saveData } from '../utils/store'
 import NoTask from './NoTask'
-import { useAnimatedStyle, withSpring } from 'react-native-reanimated'
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useDerivedValue,
+  useAnimatedScrollHandler,
+  withSpring,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated'
+
+import PeekCard from './Peek'
+import BottomSheet from '@gorhom/bottom-sheet'
 
 export default function TaskList({ tasks, color, empty }) {
-  const scrollX = useRef(new Animated.Value(0)).current
-  const adjWidth = useRef(new Animated.Value(20)).current
-  const [favourites, setfavourites] = useState([])
-  const [scrollLeft, setScrollLeft] = useState(0)
-  const [data, setdata] = useState([])
-  const scrollRef = useRef(null)
   const { width: screenWidth } = useWindowDimensions()
-
+  const scrollX = useSharedValue(0)
+  const [scrollLeft, setScrollLeft] = useState(0)
+  const [favourites, setFavourites] = useState([])
+  const [data, setData] = useState([])
+  const scrollRef = useRef(null)
+  const [peek, setPeek] = useState(false)
+  const sheetRef = useRef(null)
+  const fadeOpacity = useSharedValue(0.5)
   useEffect(() => {
-    setdata(tasks)
+    setData(tasks)
   }, [tasks])
 
-
   useEffect(() => {
-    setfavourites(data.filter((item) => item.fav === true))
-    
+    setFavourites(data.filter((item) => item.fav === true))
   }, [data])
 
-  const calculateScrollPercentage = () => {
-    // Calculate the percentage of scroll
+  useEffect(() => {
+    scrollRef.current.scrollToEnd({ animated: true })
+  }, [tasks.length])
+
+  useEffect(() => {
+    favourites.length <= 0 && scrollRef.current.scrollToEnd({ animated: true })
+  }, [favourites])
+
+  useEffect(() => {
+    if (peek) {
+      fadeOpacity.value = withTiming(0.5, { duration: 200 })
+    }
+  }, [peek])
+
+  const calculateScrollPercentage = useDerivedValue(() => {
     const totalWidth = screenWidth * 1.82 // Total width of all pages
-    const scrollValue = Animated.divide(scrollX, totalWidth)
-    return Animated.multiply(scrollValue, 100)
-  }
+    return (scrollX.value / totalWidth) * 100
+  })
 
-  const animatedLine = useAnimatedStyle(() => {
-    const translateX = calculateScrollPercentage();
-    const width = translateX; // For example purposes, you can calculate this differently
+  const animatedLineStyle = useAnimatedStyle(() => {
+    const translateX = calculateScrollPercentage.value
+    const width = translateX * 1.5 // For example purposes, you can calculate this differently
     return {
-      transform: [{ translateX: withSpring(translateX) }],
-      width: withSpring(width),
-    };
-  });
+      transform: [
+        {
+          translateX: withTiming(translateX, {
+            duration: 600,
+            easing: Easing.out(Easing.exp),
+          }),
+        },
+      ],
+      width: withTiming(width, {
+        duration: 500,
+        easing: Easing.out(Easing.exp),
+      }),
+    }
+  })
 
-  const calculateWidth = () => {
-    const totalWidth = screenWidth
-    const scrollValue = Animated.divide(adjWidth, totalWidth)
-    return Animated.multiply(scrollValue, 100)
-  }
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollX.value = event.contentOffset.x
+    // onScroll: (event) => {
+    // },
+  })
 
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { useNativeDriver: false },
-  )
-
-  const handleScrollWidth = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: adjWidth } } }],
-    { useNativeDriver: false },
-  )
-
-  const getScrollLeft = (e) => {
-    const { contentOffset } = e.nativeEvent
-    setScrollLeft(contentOffset.x)
-  }
-
-  const handleRowMoved = ({ from, to }) => {
-    const newData = [...data]
-    const itemToMove = newData[from]
-    newData.splice(from, 1)
-    newData.splice(to, 0, itemToMove)
-
-    setdata(newData)
-
-    AsyncStorage.setItem('listData', JSON.stringify(newData))
-  }
+  const derivedScrollX = useDerivedValue(() => {
+    return scrollX.value
+  })
 
   const handleDragEnd = ({ data }) => {
-    setdata(data)
+    setData(data)
     saveData('tasks', JSON.stringify(data))
   }
 
   const updateState = (x) => {
-    setdata(x)
-    if(x.length <=0 ){
+    setData(x)
+    if (x.length <= 0) {
       saveData('tasks', '')
-    }
-    else{
+      empty(true)
+    } else {
       saveData('tasks', JSON.stringify(x))
-
     }
   }
 
+  const animatedFadeStyle = useAnimatedStyle(() => ({
+    opacity: fadeOpacity.value,
+  }))
+
+  const handleSheetChanges = (index) => {
+    if (index === -1) {
+      fadeOpacity.value = withTiming(0, { duration: 100 })
+      setPeek(false)
+    } else if (index === 0) {
+      fadeOpacity.value = withTiming(0.5, { duration: 200 })
+    } else {
+      fadeOpacity.value = withTiming(1, { duration: 200 })
+    }
+  }
+  console.log('peek', peek)
   return (
-    <View style={styles.container}>
-      <View
-        style={[
-          styles.head,
-          { borderBottomWidth: 1, borderBlockColor: color.textColor + '60' },
-        ]}
-      >
-        <TaskNav
-          color={color}
-          state={calculateWidth()}
-          scrollLeft={scrollLeft}
-          scrollRef={scrollRef.current}
-        />
-        <Animated.View
-          style={[
-            styles.line,
-            {
-              backgroundColor: color?.accentColor,
-            },animatedLine
-          ]}
-        />
-      </View>
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        onContentSizeChange={() => scrollRef.current.scrollToEnd({ animated: false })}
-        showsHorizontalScrollIndicator={false}
-        onScroll={(e) => {
-          handleScroll(e)
-          handleScrollWidth(e)
-          getScrollLeft(e)
-        }}
-        scrollEventThrottle={0}
-        snapToOffsets={[0, screenWidth + 100]} // Snap to each page
-        overScrollMode='never'
-        decelerationRate='fast'
-        contentContainerStyle={styles.scroll}
+    <>
+      {peek && (
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setPeek(false)
+            sheetRef.current.close()
+          }}
         >
-        <View style={{ width: screenWidth }}>
-          {favourites.length > 0 ? (
-            <FlatList
-            alwaysBounceHorizontal
-            contentContainerStyle={styles.page}
-            data={favourites}
-              renderItem={({ item, isActive, drag, index }) => (
-                <TaskCard
-                  data={item}
-                  drag={drag}
-                  isActive={isActive}
-                  color={color}
-                  index={index}
-                  base={data}
-                  setData={updateState}
-                  fav={true}
-                />
-              )}
-              nestedScrollEnabled={true}
-            />
-          )
-          :
-          <NoTask color={color} text={'Mark important tasks with a star to see them here'}/>
-        
-        }
+          <Animated.View style={[styles.fadeBackground, animatedFadeStyle]}>
+            <View style={styles.fullScreenTouchable}></View>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+      )}
+      <View style={styles.container}>
+        <View
+          style={[
+            styles.head,
+            { borderBottomWidth: 1, borderBlockColor: color.textColor + '60' },
+          ]}
+        >
+          <TaskNav
+            color={color}
+            state={calculateScrollPercentage.value}
+            scrollLeft={derivedScrollX}
+            scrollRef={scrollRef.current}
+          />
+          <Animated.View
+            style={[
+              styles.line,
+              {
+                backgroundColor: color?.accentColor,
+              },
+              animatedLineStyle,
+            ]}
+          />
         </View>
-        {data.length > 0 && (
-          <NestableScrollContainer style={[styles.page, {width: screenWidth}]}>
-          <NestableDraggableFlatList
-            data={data}
-            renderItem={({ item, isActive, drag, getIndex }) => (
-              <TaskCard
-                data={item}
-                drag={drag}
-                isActive={isActive}
+        <Animated.ScrollView
+          ref={scrollRef}
+          horizontal
+          // pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onScroll={scrollHandler}
+          onScrollEndDrag={(e) => setScrollLeft(e.nativeEvent.contentOffset.x)}
+          scrollEventThrottle={-200}
+          snapToOffsets={[0, screenWidth]} // Snap to each page
+          overScrollMode='never'
+          // alwaysBounceHorizontal={true}
+          decelerationRate='fast'
+          contentContainerStyle={styles.scroll}
+        >
+          <View style={[styles.page, { width: screenWidth }]}>
+            {favourites.length > 0 ? (
+              <FlatList
+                // contentContainerStyle={styles.page}
+                data={favourites}
+                renderItem={({ item, isActive, index }) => (
+                  <TaskCard
+                    data={item}
+                    drag={() => {}}
+                    isActive={isActive}
+                    color={color}
+                    index={index}
+                    base={data}
+                    setData={updateState}
+                    fav={true}
+                    peek={(data) => setPeek(data)}
+                    onPress={() => setPeek(item)}
+                  />
+                )}
+                nestedScrollEnabled={true}
+              />
+            ) : (
+              <NoTask
                 color={color}
-                index={getIndex()}
-                base={data}
-                setData={updateState}
+                text='Mark important tasks with a star to see them here'
+                height={Dimensions.get('window').height - 100}
               />
             )}
-            keyExtractor={(item) => item.id.toString()}
-            onDragEnd={handleDragEnd}
-            nestedScrollEnabled={true}
-            
-          />
-          </NestableScrollContainer>
-        )}
-        {/* </View> */}
-      </ScrollView>
-    </View>
+          </View>
+          {data.length > 0 && (
+            <NestableScrollContainer
+              style={[styles.page, { width: screenWidth }]}
+            >
+              <NestableDraggableFlatList
+                data={data}
+                containerStyle={styles.scroll}
+                renderItem={({ item, isActive, drag, getIndex }) => (
+                  <TaskCard
+                    data={item}
+                    drag={drag}
+                    isActive={isActive}
+                    color={color}
+                    index={getIndex()}
+                    base={data}
+                    setData={updateState}
+                    peek={(data) => setPeek(data)}
+                    onPress={() => setPeek(item)}
+                  />
+                )}
+                keyExtractor={(item) => item.id.toString()}
+                onDragEnd={handleDragEnd}
+                nestedScrollEnabled={true}
+              />
+              <View style={{ height: 140 }}></View>
+            </NestableScrollContainer>
+          )}
+        </Animated.ScrollView>
+      </View>
+      <BottomSheet
+        ref={sheetRef}
+        snapPoints={[250, '50%']}
+        r
+        backgroundStyle={{
+          backgroundColor: color.fgColor,
+          borderTopLeftRadius: 32,
+          borderTopRightRadius: 32,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: color.textColor,
+        }}
+        containerStyle={styles.sheet}
+        renderContent={PeekCard}
+        enablePanDownToClose
+        index={peek ? 0 : -1}
+        // animateOnMount={true}
+        onChange={handleSheetChanges}
+      >
+        <PeekCard data={peek} base={data} />
+      </BottomSheet>
+    </>
   )
 }
 
@@ -199,28 +263,34 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   head: {
-    marginTop: 24,
+    marginTop: 18,
     alignContent: 'flex-start',
   },
   page: {
     height: '100%',
-    flex: 1,
-    marginTop: 20,
+    flex: 1.5,
+    paddingVertical: 20,
   },
   line: {
-    // position: 'absolute',
-    // top: 30,
-    // left: 0,
     height: 3,
     minWidth: 24,
-    maxWidth:60,
+    maxWidth: 60,
     marginLeft: 23,
     borderTopLeftRadius: 10000,
     borderTopRightRadius: 10000,
     borderRadius: 900,
-    backgroundColor: 'red',
   },
   scroll: {
-    // paddingHorizontal: 20,
+    // paddingBottom: 10,
+  },
+  sheet: {
+    zIndex: 1000,
+  },
+  fadeBackground: {
+    zIndex: 10,
+    ...StyleSheet.absoluteFillObject,
+    width: Dimensions.get('window').width,
+    minHeight: Dimensions.get('window').height,
+    backgroundColor: '#00000070',
   },
 })

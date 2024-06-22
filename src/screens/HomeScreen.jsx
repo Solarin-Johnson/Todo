@@ -50,7 +50,6 @@ export default HomeScreen = ({ route }) => {
     CheckUname()
     LoadTasks()
   }, [])
-  console.log('newtask', newTask)
 
   useBackHandler(() => {
     if (!newTask) {
@@ -75,7 +74,11 @@ export default HomeScreen = ({ route }) => {
         {!tasks || tasks.length < 1 ? (
           <NoTask color={color} />
         ) : (
-          <TaskList tasks={tasks} color={color} empty={(e)=> e && settasks('')}/>
+          <TaskList
+            tasks={tasks}
+            color={color}
+            empty={(e) => e && settasks('')}
+          />
         )}
         <View
           style={[
@@ -103,7 +106,7 @@ export default HomeScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: 16,
   },
 
   defText: {

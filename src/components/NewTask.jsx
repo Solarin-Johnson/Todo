@@ -43,9 +43,13 @@ export default function NewTask({ color, close }) {
   const AddTask = async (e) => {
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
-      console.log('testing',loadTask);
       const tasks = JSON.parse(loadTask)
-      tasks.push({ id: parseInt(tasks[tasks.length -1].id) + 1, title: input, desc: desc, fav: fav })
+      tasks.push({
+        id: parseInt(tasks[tasks.length - 1].id) + 1,
+        title: input,
+        desc: desc,
+        fav: fav,
+      })
       await saveData('tasks', JSON.stringify(tasks))
       close(false)
     } else {
@@ -65,14 +69,12 @@ export default function NewTask({ color, close }) {
   return (
     <>
       <TouchableWithoutFeedback onPress={() => close(false)}>
-        <View
-          style={[styles.fade, { backgroundColor: color?.accentColor }]}
-        ></View>
+        <View style={[styles.fade]}></View>
       </TouchableWithoutFeedback>
       <Animated.View
         style={[
           styles.container,
-          { backgroundColor: color?.bgColor, transform: [{ translateY }] },
+          { backgroundColor: color?.fgColor, transform: [{ translateY }] },
         ]}
       >
         <InputText
@@ -156,7 +158,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: '100%',
     zIndex: 100,
-    opacity: 0.15,
+    opacity: 0.3,
+    backgroundColor: '#000',
     // zIndex: 1000,
   },
   container: {
@@ -169,8 +172,8 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingHorizontal: 3,
     bottom: 0,
-    borderRadius: 14,
-    gap: 4,
+    borderRadius: 20,
+    gap: 10,
     zIndex: 200,
   },
   options: {

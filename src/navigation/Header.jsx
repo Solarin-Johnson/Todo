@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   greetings: {
-    fontSize: 23,
-    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 20,
+    fontFamily: 'Raleway_600SemiBold',
   },
 })

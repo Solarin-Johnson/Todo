@@ -1,10 +1,13 @@
 import { Image } from 'expo-image'
 import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native'
 
-export default NoTask = ({ color, text }) => {
+export default NoTask = ({ color, text, height }) => {
   return (
     <ScrollView
-      contentContainerStyle={styles.container}
+      contentContainerStyle={[
+        styles.container,
+        { minHeight: height ? height : Dimensions.get('window').height },
+      ]}
       scrollEnabled={false}
       showsVerticalScrollIndicator={false}
     >
@@ -12,7 +15,7 @@ export default NoTask = ({ color, text }) => {
         style={styles.image}
         source={require('../assets/emptytask.png')}
         contentFit='contain'
-        transition={500}
+        // transition={500}
       />
       <Text style={[styles.text, { color: color?.textColor }]}>
         {text ? text : 'Add a task now to get started'}
@@ -26,7 +29,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: Dimensions.get('window').height,
+    // minHeight: '100%',
     // backgroundColor: '#fff',
   },
   image: {

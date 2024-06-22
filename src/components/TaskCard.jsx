@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback as RNTouchableWithoutFeedback,
+} from 'react-native'
 import { Entypo, FontAwesome6, Octicons } from '@expo/vector-icons'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Animated, {
   FlipInEasyX,
   FlipOutEasyX,
@@ -13,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import TouchableMadeEasier from './touchables'
 import { replaceFavouriteStateAtIndex, Truncate } from '../utils'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 export const TaskCard = ({
   index,
@@ -22,6 +28,7 @@ export const TaskCard = ({
   isActive,
   color,
   base,
+  onPress,
 }) => {
   const [fav, setfav] = useState()
   const [seeAll, setSeeAll] = useState(false)
@@ -43,58 +50,87 @@ export const TaskCard = ({
     return {
       transform: [{ scale: withSpring(dragScale.value) }],
       flex: 1,
-    };
-  }); 
+    }
+  })
 
   useEffect(() => {
     dragScale.value = isActive ? 1.05 : 1
-  }, [isActive]);
+  }, [isActive])
 
-
-  const dragged = ()=> {
+  const dragged = () => {
     drag()
   }
 
   return (
     <Animated.View
-      entering={LightSpeedInRight}
-      exiting={LightSpeedOutLeft}
-      style={styles.container}
+      style={[
+        styles.subContainer,
+        animatedStyle,
+        { backgroundColor: color.fgColor },
+      ]}
     >
-    <Animated.View 
-        style={animatedStyle}
+      <Animated.View
+        entering={LightSpeedInRight}
+        exiting={LightSpeedOutLeft}
+        style={[styles.container, { backgroundColor: color.fgColor }]}
       >
-      <TouchableWithoutFeedback
-        style={[styles.child, { backgroundColor: color?.fgColor }]}
-        onLongPress={dragged}
-        onPress={()=> setSeeAll(!seeAll)}
-      >
-        <TouchableMadeEasier
-          round={true}
-          width={40}
-          color={color}
-          onPress={toggleFavourite}
+        <TouchableWithoutFeedback
+          style={[styles.child, { backgroundColor: color?.fgColor }]}
+          onLongPress={dragged}
         >
-          {fav ? (
-            <Octicons name='star-fill' size={20} color={color?.accentColor} />
-          ) : (
-            <Octicons name='star' size={20} color={color?.textColor + 'AB'} />
-          )}
-        </TouchableMadeEasier>
-        <View style={styles.body} >
-        <TouchableWithoutFeedback  onPress={()=> setSeeAll(!seeAll)}>
-          <Text style={[styles.title, {color: color.textColor}]}>
-            {seeAll && data.desc ? <Truncate text={data.title} limit={20} /> : data.title}
-          </Text>
-          {seeAll && data.desc && <Text style={[styles.desc, {color: color.textColor}]}>{data.desc}</Text>}
-          {/* <Text>{data.desc}</Text> */}
+          <View style={styles.btn}>
+            <TouchableMadeEasier
+              round={true}
+              width={40}
+              color={color}
+              onPress={toggleFavourite}
+            >
+              {fav ? (
+                <Octicons
+                  name='star-fill'
+                  size={20}
+                  color={color?.accentColor}
+                />
+              ) : (
+                <Octicons
+                  name='star'
+                  size={20}
+                  color={color?.textColor + 'AB'}
+                />
+              )}
+            </TouchableMadeEasier>
+          </View>
+          <RNTouchableWithoutFeedback
+            // onPress={() => setSeeAll(!seeAll)}
+            onPress={onPress}
+            onLongPress={dragged}
+          >
+            <View style={styles.body}>
+              <Text style={[styles.title, { color: color.textColor }]}>
+                {seeAll && data.desc ? (
+                  <Truncate text={data.title} limit={20} />
+                ) : (
+                  data.title
+                )}
+              </Text>
+            </View>
+          </RNTouchableWithoutFeedback>
+          <View style={styles.btn}>
+            <TouchableMadeEasier
+              round={true}
+              width={40}
+              color={color}
+              onPress={deleteTask}
+            >
+              <Octicons
+                name='trash'
+                size={22}
+                color={color?.textColor + 'AB'}
+              />
+            </TouchableMadeEasier>
+          </View>
         </TouchableWithoutFeedback>
-        </View>
-        <TouchableMadeEasier round={true} width={40} color={color} onPress={deleteTask}>
-          <Octicons name='trash' size={22} color={color?.textColor + 'AB'} />
-        </TouchableMadeEasier>
-      </TouchableWithoutFeedback>
-    </Animated.View>
+      </Animated.View>
     </Animated.View>
   )
 }
@@ -105,29 +141,29 @@ const styles = StyleSheet.create({
     shadowColor: '#194B7DA8',
     width: '85%',
     alignSelf: 'center',
-    marginVertical: 12,
     borderRadius: 16,
+    height: 80,
+    marginVertical: 12,
     overflow: 'hidden',
     borderColor: '#EEF2F760',
     borderWidth: 1,
-    height: 80,
   },
+  subContainer: {},
   child: {
-    // paddingVertical: 10,
-    paddingHorizontal: 5,
-    justifyContent: 'space-between',
+    paddingHorizontal: 4,
+    justifyContent: 'center',
     flexDirection: 'row',
-    alignItems: 'center',
     height: 80,
     gap: 12,
   },
   body: {
     flex: 1,
-    gap: 5,
+    justifyContent: 'center',
+  },
+  btn: {
     justifyContent: 'center',
   },
   title: {
-    // backgroundColor: 'red',
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 16,
     lineHeight: 19,

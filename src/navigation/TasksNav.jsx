@@ -1,39 +1,53 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native'
 import TouchableMadeEasier from '../components/touchables'
 import { FontAwesome } from '@expo/vector-icons'
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+} from 'react-native-reanimated'
 
 export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
   const [fav, setfav] = useState(false)
   const [task, settask] = useState(false)
+  const [current, setCurrent] = useState(scrollLeft)
+  const [prev, setPrev] = useState(0)
   const { width: screenWidth } = useWindowDimensions()
-
-  useEffect(() => {
-    if (state < 50) {
-      setfav(true)
-    }
-  }, [state])
-
-  useEffect(() => {
-    if (scrollLeft) {
-      if (scrollLeft < screenWidth / 2) {
-        setfav(true)
-        settask(false)
-      } else {
-        setfav(false)
-        settask(true)
-      }
-    }
-  }, [scrollLeft])
 
   const clickFav = () => {
     scrollRef.scrollTo({ x: 0, animated: true })
     setfav(true)
+    settask(false)
   }
   const clickTasks = () => {
-    scrollRef.scrollTo({x:400, animated: true })
+    scrollRef.scrollToEnd({ animated: true })
+    setfav(false)
     settask(true)
   }
+
+  const favColor = useAnimatedStyle(() => {
+    const iconColor = interpolateColor(
+      scrollLeft.value,
+      [0, 100, screenWidth],
+      [color.accentColor, color.textColor + '99', color.textColor + '99'],
+    )
+
+    return {
+      color: iconColor,
+    }
+  })
+
+  const taskColor = useAnimatedStyle(() => {
+    const iconColor = interpolateColor(
+      scrollLeft.value,
+      [0, 100, screenWidth],
+      [color.textColor + 'cc', color.textColor + 'cc', color.accentColor],
+    )
+
+    return {
+      color: iconColor,
+    }
+  })
 
   return (
     <View style={styles.nav}>
@@ -43,11 +57,13 @@ export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
         color={color}
         onPress={() => clickFav()}
       >
-        <FontAwesome
-          name='star'
-          size={20}
-          color={fav ? color?.accentColor : color?.textColor + '99'}
-        />
+        <Animated.Text style={favColor}>
+          <FontAwesome
+            name='star'
+            size={20}
+            // color={fav ? color?.accentColor : color?.textColor + '99'}
+          />
+        </Animated.Text>
       </TouchableMadeEasier>
       <TouchableMadeEasier
         round={10}
@@ -56,14 +72,15 @@ export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
         color={color}
         onPress={() => clickTasks()}
       >
-        <Text
+        <Animated.Text
           style={[
             styles.child,
+            taskColor,
             { color: task ? color?.accentColor : color?.textColor + 'cc' },
           ]}
         >
           My Tasks
-        </Text>
+        </Animated.Text>
       </TouchableMadeEasier>
     </View>
   )

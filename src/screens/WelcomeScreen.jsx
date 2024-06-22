@@ -64,9 +64,9 @@ export const EnterName = ({ responsive, color }) => {
 
   return (
     <>
-    <View style={styles.subContainer}>
-      <Text style={[styles.title, responsive.text]}>Hello there!</Text>
-      {/* <Text
+      <View style={styles.subContainer}>
+        <Text style={[styles.title, responsive.text]}>Hello there!</Text>
+        {/* <Text
         style={[
           styles.subTitle,
           responsive.text,
@@ -75,29 +75,29 @@ export const EnterName = ({ responsive, color }) => {
       >
         Welcome
       </Text> */}
-      <Text
-        style={[
-          styles.subTitle,
-          { opacity: 0.7 },
-          responsive.text,
-          { fontFamily: 'Raleway_400Regular', paddingTop: 10, fontSize: 16},
-        ]}
-      >
-        Enter your name to continue to Todo
-      </Text>
-      <View
-        style={[styles.inputContainer, { backgroundColor: color?.fgColor }]}
-      >
-        <FontAwesome5 name='user' size={18} color={color.textColor} />
-        <InputText
-          InputRef={InputRef}
-          color={color}
-          handleTextChange={handleTextChange}
-          text={uname}
-          placeholder={'Enter your display name'}
-        />
+        <Text
+          style={[
+            styles.subTitle,
+            { opacity: 0.7 },
+            responsive.text,
+            { fontFamily: 'Raleway_400Regular', paddingTop: 10, fontSize: 16 },
+          ]}
+        >
+          Enter your name to continue to Todo
+        </Text>
+        <View
+          style={[styles.inputContainer, { backgroundColor: color?.fgColor }]}
+        >
+          <FontAwesome5 name='user' size={18} color={color.textColor} />
+          <InputText
+            InputRef={InputRef}
+            color={color}
+            handleTextChange={handleTextChange}
+            text={uname}
+            placeholder={'Enter your display name'}
+          />
+        </View>
       </View>
-    </View>
       {uname.length > 1 && (
         <View style={styles.buttonArea}>
           <Button
@@ -110,7 +110,7 @@ export const EnterName = ({ responsive, color }) => {
           />
         </View>
       )}
-      </>
+    </>
   )
 }
 export const NewUser = ({ responsive, color }) => {
