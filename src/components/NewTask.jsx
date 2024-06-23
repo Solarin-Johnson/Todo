@@ -45,7 +45,7 @@ export default function NewTask({ color, close }) {
     if (loadTask !== '') {
       const tasks = JSON.parse(loadTask)
       tasks.push({
-        id: parseInt(tasks[tasks.length - 1].id) + 1,
+        id: parseInt(tasks.length),
         title: input,
         desc: desc,
         fav: fav,
