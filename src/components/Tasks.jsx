@@ -259,7 +259,6 @@ export default function TaskList({ tasks, color, empty }) {
         <BottomSheet
           ref={sheetRef}
           snapPoints={[160, '50%']}
-          r
           backgroundStyle={{
             backgroundColor: color.fgColor,
             borderTopLeftRadius: 32,
