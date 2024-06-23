@@ -96,7 +96,7 @@ export default function NewTask({ color, close }) {
             handleTextChange={(e) => setdesc(e)}
             color={color}
             placeholder={'Add description'}
-            maxLength={50}
+            maxLength={200}
             size={15}
             padding={'0'}
             autoFocus={true}

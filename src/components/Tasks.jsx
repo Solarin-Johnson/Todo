@@ -27,6 +27,8 @@ import Animated, {
 
 import PeekCard from './Peek'
 import BottomSheet from '@gorhom/bottom-sheet'
+import { useBackHandler } from '@react-native-community/hooks'
+import CustomFooter from './customFooter'
 
 export default function TaskList({ tasks, color, empty }) {
   const { width: screenWidth } = useWindowDimensions()
@@ -34,8 +36,10 @@ export default function TaskList({ tasks, color, empty }) {
   const [scrollLeft, setScrollLeft] = useState(0)
   const [favourites, setFavourites] = useState([])
   const [data, setData] = useState([])
+  const [sheetIndex, setSheetIndex] = useState(-1)
   const scrollRef = useRef(null)
   const [peek, setPeek] = useState(false)
+  const [fade, setFade] = useState(false)
   const sheetRef = useRef(null)
   const fadeOpacity = useSharedValue(0.5)
   useEffect(() => {
@@ -57,6 +61,10 @@ export default function TaskList({ tasks, color, empty }) {
   useEffect(() => {
     if (peek) {
       fadeOpacity.value = withTiming(0.5, { duration: 200 })
+      setFade(true)
+    } else {
+      fadeOpacity.value = withTiming(0, { duration: 200 })
+      setFade(false)
     }
   }, [peek])
 
@@ -114,6 +122,8 @@ export default function TaskList({ tasks, color, empty }) {
   }))
 
   const handleSheetChanges = (index) => {
+    console.log(index)
+    setSheetIndex(index)
     if (index === -1) {
       fadeOpacity.value = withTiming(0, { duration: 100 })
       setPeek(false)
@@ -123,14 +133,27 @@ export default function TaskList({ tasks, color, empty }) {
       fadeOpacity.value = withTiming(1, { duration: 200 })
     }
   }
-  console.log('peek', peek)
+  console.log('peek', peek, fade)
+
+  const closeSheet = () => {
+    sheetRef && sheetRef.current.close()
+    setFade(false)
+    fadeOpacity.value = withTiming(0, { duration: 100 })
+  }
+
+  useBackHandler(() => {
+    closeSheet()
+    return true
+  })
+
   return (
     <>
-      {peek && (
+      {fade && (
         <TouchableWithoutFeedback
           onPress={() => {
-            setPeek(false)
+            setFade(false)
             sheetRef.current.close()
+            fadeOpacity.value = withTiming(0, { duration: 100 })
           }}
         >
           <Animated.View style={[styles.fadeBackground, animatedFadeStyle]}>
@@ -190,7 +213,6 @@ export default function TaskList({ tasks, color, empty }) {
                     base={data}
                     setData={updateState}
                     fav={true}
-                    peek={(data) => setPeek(data)}
                     onPress={() => setPeek(item)}
                   />
                 )}
@@ -220,7 +242,6 @@ export default function TaskList({ tasks, color, empty }) {
                     index={getIndex()}
                     base={data}
                     setData={updateState}
-                    peek={(data) => setPeek(data)}
                     onPress={() => setPeek(item)}
                   />
                 )}
@@ -233,27 +254,41 @@ export default function TaskList({ tasks, color, empty }) {
           )}
         </Animated.ScrollView>
       </View>
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={[250, '50%']}
-        r
-        backgroundStyle={{
-          backgroundColor: color.fgColor,
-          borderTopLeftRadius: 32,
-          borderTopRightRadius: 32,
-        }}
-        handleIndicatorStyle={{
-          backgroundColor: color.textColor,
-        }}
-        containerStyle={styles.sheet}
-        renderContent={PeekCard}
-        enablePanDownToClose
-        index={peek ? 0 : -1}
-        // animateOnMount={true}
-        onChange={handleSheetChanges}
-      >
-        <PeekCard data={peek} base={data} />
-      </BottomSheet>
+      {peek && (
+        <BottomSheet
+          ref={sheetRef}
+          snapPoints={[220, '50%']}
+          r
+          backgroundStyle={{
+            backgroundColor: color.fgColor,
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+          }}
+          handleIndicatorStyle={{
+            backgroundColor: color.textColor,
+          }}
+          // footerComponent={CustomFooter}
+          containerStyle={styles.sheet}
+          renderContent={PeekCard}
+          enablePanDownToClose
+          keyboardBehavior='fillParent'
+          android_keyboardInputMode='adjustResize'
+          keyboardBlurBehavior='restore'
+          index={peek ? 0 : -1}
+          animateOnMount={true}
+          onChange={handleSheetChanges}
+        >
+          <PeekCard
+            index={sheetIndex}
+            data={peek}
+            base={data}
+            setData={updateState}
+            color={color}
+            sheetRef={sheetRef}
+            close={closeSheet}
+          />
+        </BottomSheet>
+      )}
     </>
   )
 }

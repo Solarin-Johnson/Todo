@@ -107,11 +107,7 @@ export const TaskCard = ({
           >
             <View style={styles.body}>
               <Text style={[styles.title, { color: color.textColor }]}>
-                {seeAll && data.desc ? (
-                  <Truncate text={data.title} limit={20} />
-                ) : (
-                  data.title
-                )}
+                <Truncate text={data.title} limit={10} />
               </Text>
             </View>
           </RNTouchableWithoutFeedback>
@@ -166,7 +162,7 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 16,
-    lineHeight: 19,
+    lineHeight: 21,
   },
   desc: {
     opacity: 0.8,
