@@ -53,3 +53,7 @@ export function changeTitle(objectsArray, id, newTitle) {
     obj.id === id ? { ...obj, title: newTitle } : obj,
   )
 }
+export function removeLineBreaks(inputString) {
+  // Replace all line breaks with an empty string
+  return inputString.replace(/(\r\n|\n|\r)/gm, '').trim()
+}

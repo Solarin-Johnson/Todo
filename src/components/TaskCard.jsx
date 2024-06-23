@@ -17,7 +17,11 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import TouchableMadeEasier from './touchables'
-import { replaceFavouriteStateAtIndex, Truncate } from '../utils'
+import {
+  removeLineBreaks,
+  replaceFavouriteStateAtIndex,
+  Truncate,
+} from '../utils'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 
 export const TaskCard = ({
@@ -29,9 +33,26 @@ export const TaskCard = ({
   color,
   base,
   onPress,
+  ...props
 }) => {
   const [fav, setfav] = useState()
   const [seeAll, setSeeAll] = useState(false)
+  const [longPressTimer, setLongPressTimer] = useState(null)
+
+  const handlePressIn = () => {
+    const timer = setTimeout(() => {
+      dragged()
+      dragScale.value = 1.03
+    }, 100)
+    setLongPressTimer(timer)
+  }
+
+  const handlePressOut = () => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer)
+    }
+  }
+
   useEffect(() => {
     setfav(data.fav)
   }, [data])
@@ -49,12 +70,11 @@ export const TaskCard = ({
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: withSpring(dragScale.value) }],
-      flex: 1,
     }
   })
 
   useEffect(() => {
-    dragScale.value = isActive ? 1.05 : 1
+    dragScale.value = isActive ? 1.02 : 1
   }, [isActive])
 
   const dragged = () => {
@@ -62,19 +82,18 @@ export const TaskCard = ({
   }
 
   return (
-    <Animated.View
-      style={[
-        styles.subContainer,
-        animatedStyle,
-        { backgroundColor: color.fgColor },
-      ]}
-    >
+    <Animated.View style={[styles.subContainer]}>
       <Animated.View
         entering={LightSpeedInRight}
         exiting={LightSpeedOutLeft}
         style={[styles.container, { backgroundColor: color.fgColor }]}
       >
-        <TouchableWithoutFeedback style={[styles.child]} onLongPress={dragged}>
+        <TouchableWithoutFeedback
+          style={[styles.child]}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          // onTouchCancel={() => (dragScale.value = 1)}
+        >
           <View style={styles.btn}>
             <TouchableMadeEasier
               round={true}
@@ -99,12 +118,14 @@ export const TaskCard = ({
           </View>
           <RNTouchableWithoutFeedback
             // onPress={() => setSeeAll(!seeAll)}
-            onPress={onPress}
-            onLongPress={dragged}
+            onPress={() => {
+              onPress()
+            }}
+            // onLongPress={dragged}
           >
             <View style={styles.body}>
               <Text style={[styles.title, { color: color.textColor }]}>
-                <Truncate text={data.title} limit={10} />
+                <Truncate text={removeLineBreaks(data.title)} limit={10} />
               </Text>
             </View>
           </RNTouchableWithoutFeedback>

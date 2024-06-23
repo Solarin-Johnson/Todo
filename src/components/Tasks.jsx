@@ -122,10 +122,8 @@ export default function TaskList({ tasks, color, empty }) {
   }))
 
   const handleSheetChanges = (index) => {
-    console.log(index)
     setSheetIndex(index)
     if (index === -1) {
-      console.log('bitch')
       fadeOpacity.value = withTiming(0, { duration: 100 })
       setFade(false)
       setPeek(false)
@@ -243,7 +241,9 @@ export default function TaskList({ tasks, color, empty }) {
                     index={getIndex()}
                     base={data}
                     setData={updateState}
-                    onPress={() => setPeek(item)}
+                    onPress={() => {
+                      setPeek(item)
+                    }}
                   />
                 )}
                 keyExtractor={(item) => item.id.toString()}
@@ -258,7 +258,7 @@ export default function TaskList({ tasks, color, empty }) {
       {peek && (
         <BottomSheet
           ref={sheetRef}
-          snapPoints={[160, '50%']}
+          snapPoints={[280, 500]}
           backgroundStyle={{
             backgroundColor: color.fgColor,
             borderTopLeftRadius: 32,
@@ -269,7 +269,7 @@ export default function TaskList({ tasks, color, empty }) {
           }}
           // footerComponent={CustomFooter}
           containerStyle={styles.sheet}
-          renderContent={PeekCard}
+          // renderContent={PeekCard}
           // enablePanDownToClose
           keyboardBehavior='fillParent'
           android_keyboardInputMode='adjustResize'

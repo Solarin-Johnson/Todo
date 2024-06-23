@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import {
   changeDescription,
   changeTitle,
+  removeLineBreaks,
   replaceFavouriteStateAtIndex,
 } from '../utils'
 import { BottomSheetTextInput, useBottomSheet } from '@gorhom/bottom-sheet'
@@ -22,15 +23,14 @@ export default function PeekCard({
   data,
   color,
   setData,
-  index,
   sheetRef,
   close,
 }) {
   const [fav, setfav] = useState()
   const scrollX = useSharedValue(0)
   const { animatedIndex } = useBottomSheet()
-  const [title, setTitle] = useState(data.title)
-  const [desc, setDesc] = useState(data.desc)
+  const [title, setTitle] = useState(removeLineBreaks(data.title))
+  const [desc, setDesc] = useState(removeLineBreaks(data.desc))
 
   const animatedOpacity = useAnimatedStyle(() => {
     return {
@@ -108,21 +108,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [-50, -35, 0, 0],
-              Extrapolation.CLAMP,
-            ),
-            {
-              duration: 150,
-              easing: Easing.out(Easing.ease),
-            },
-          ),
-        },
-        {
-          translateY: withTiming(
-            interpolate(
-              animatedIndex.value,
-              [-1, 0, 0.5, 1],
-              [5, 5, 0, 0],
+              [-35, -35, 0, 0],
               Extrapolation.CLAMP,
             ),
             {
@@ -269,6 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     minWidth: '100%',
+    gap: 10,
   },
   head: {
     width: '100%',
@@ -287,20 +274,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'start',
     alignItems: 'start',
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
     // backgroundColor: 'red',
   },
   titleLabel: {
-    paddingBottom: 12,
+    // backgroundColor: 'red',
+    flex: 1,
+    justifyContent: 'center',
+    // minHeight: 90,
+    maxHeight: 160,
     // width: '84%',
   },
   title: {
     fontFamily: 'Nunito_700Bold',
-    // paddingVertical: 10,
-    minHeight: 90,
-    maxHeight: 150,
-    fontSize: 26,
-    width: '100%',
+    fontSize: 32,
+    width: '99%',
     textAlign: 'left',
     lineHeight: 40,
     textAlignVertical: 'center',
@@ -311,7 +299,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',
-    paddingTop: 85,
+    paddingTop: 94,
     maxWidth: '100%',
   },
   desc: {
@@ -324,8 +312,8 @@ const styles = StyleSheet.create({
   },
   float: {
     position: 'absolute',
-    top: 56,
-    right: 0,
+    top: 92,
+    right: 5,
     fontFamily: 'Nunito_700Bold',
     backgroundColor: '#00000099',
     width: 45,

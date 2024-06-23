@@ -106,7 +106,7 @@ export default HomeScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 16,
+    paddingTop: 10,
   },
 
   defText: {

@@ -197,12 +197,14 @@ const styles = StyleSheet.create({
     paddingBottom: 6,
   },
   inputContainer: {
+    alignSelf: 'center',
     flexDirection: 'row',
     borderRadius: 8,
     marginTop: 20,
     alignItems: 'center',
     gap: 5,
     paddingHorizontal: 15,
+    maxWidth: 350,
     //   borderColor: color.textColor,
   },
 

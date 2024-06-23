@@ -9,27 +9,23 @@
     "splash": {
       "image": "./src/assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "automatic"
+      "backgroundColor": "#262E3E"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "automatic"
+        "backgroundColor": "#262E3E"
       },
       "package": "com.dotjs.todo"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "plugins": [
-      "expo-font"
-    ],
+    "plugins": ["expo-font"],
     "extra": {
       "eas": {
         "projectId": "3f406fa8-ff10-4b01-9bfe-5a234379744e"
