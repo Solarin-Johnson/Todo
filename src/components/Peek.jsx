@@ -223,7 +223,7 @@ export default function PeekCard({
             <FontAwesome5
               name='align-left'
               size={18}
-              color={color?.textColor + '99'}
+              color={color?.textColor + 'bc'}
             />
           </TouchableWithoutFeedback>
           <BottomSheetTextInput
@@ -244,7 +244,6 @@ export default function PeekCard({
       </View>
       <TouchableWithoutFeedback
         onPress={() => sheetRef.current && sheetRef.current.expand()}
-        containerStyle={{ backgroundColor: 'red' }}
       >
         <Animated.View
           style={[
@@ -319,7 +318,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Nunito_400Regular',
     fontSize: 16,
     textAlign: 'left',
-    paddingLeft: 20,
+    paddingHorizontal: 20,
     lineHeight: 24,
     width: '100%',
   },
