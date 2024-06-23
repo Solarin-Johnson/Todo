@@ -125,15 +125,16 @@ export default function TaskList({ tasks, color, empty }) {
     console.log(index)
     setSheetIndex(index)
     if (index === -1) {
+      console.log('bitch')
       fadeOpacity.value = withTiming(0, { duration: 100 })
+      setFade(false)
       setPeek(false)
     } else if (index === 0) {
-      fadeOpacity.value = withTiming(0.5, { duration: 200 })
+      fadeOpacity.value = withTiming(0.8, { duration: 200 })
     } else {
       fadeOpacity.value = withTiming(1, { duration: 200 })
     }
   }
-  console.log('peek', peek, fade)
 
   const closeSheet = () => {
     sheetRef && sheetRef.current.close()
@@ -257,7 +258,7 @@ export default function TaskList({ tasks, color, empty }) {
       {peek && (
         <BottomSheet
           ref={sheetRef}
-          snapPoints={[220, '50%']}
+          snapPoints={[160, '50%']}
           r
           backgroundStyle={{
             backgroundColor: color.fgColor,
@@ -270,7 +271,7 @@ export default function TaskList({ tasks, color, empty }) {
           // footerComponent={CustomFooter}
           containerStyle={styles.sheet}
           renderContent={PeekCard}
-          enablePanDownToClose
+          // enablePanDownToClose
           keyboardBehavior='fillParent'
           android_keyboardInputMode='adjustResize'
           keyboardBlurBehavior='restore'
@@ -298,13 +299,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   head: {
-    marginTop: 18,
+    marginTop: 28,
     alignContent: 'flex-start',
   },
   page: {
     height: '100%',
     flex: 1.5,
-    paddingVertical: 20,
+    paddingVertical: 16,
   },
   line: {
     height: 3,
@@ -326,6 +327,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     width: Dimensions.get('window').width,
     minHeight: Dimensions.get('window').height,
-    backgroundColor: '#00000070',
+    backgroundColor: '#00000075',
   },
 })

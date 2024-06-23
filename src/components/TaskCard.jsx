@@ -74,10 +74,7 @@ export const TaskCard = ({
         exiting={LightSpeedOutLeft}
         style={[styles.container, { backgroundColor: color.fgColor }]}
       >
-        <TouchableWithoutFeedback
-          style={[styles.child, { backgroundColor: color?.fgColor }]}
-          onLongPress={dragged}
-        >
+        <TouchableWithoutFeedback style={[styles.child]} onLongPress={dragged}>
           <View style={styles.btn}>
             <TouchableMadeEasier
               round={true}
@@ -139,7 +136,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 16,
     height: 80,
-    marginVertical: 12,
+    marginVertical: 15,
     overflow: 'hidden',
     borderColor: '#EEF2F760',
     borderWidth: 1,

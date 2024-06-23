@@ -41,3 +41,15 @@ export function replaceFavouriteStateAtIndex(objectsArray, id, newState) {
     obj.id === id ? { ...obj, fav: newState } : obj,
   )
 }
+
+export function changeDescription(objectsArray, id, newDesc) {
+  return objectsArray.map((obj) =>
+    obj.id === id ? { ...obj, desc: newDesc } : obj,
+  )
+}
+
+export function changeTitle(objectsArray, id, newTitle) {
+  return objectsArray.map((obj) =>
+    obj.id === id ? { ...obj, title: newTitle } : obj,
+  )
+}
