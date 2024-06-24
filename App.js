@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler'
 import { useEffect, useState } from 'react'
 
 import { StyleSheet, Text, useColorScheme, View } from 'react-native'

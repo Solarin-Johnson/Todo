@@ -24,11 +24,11 @@ export default function PeekCard({
   color,
   setData,
   sheetRef,
-  close,
+  closeSheet,
 }) {
   const [fav, setfav] = useState()
   const scrollX = useSharedValue(0)
-  const { animatedIndex } = useBottomSheet()
+  const { animatedIndex, close } = useBottomSheet()
   const [title, setTitle] = useState(removeLineBreaks(data.title))
   const [desc, setDesc] = useState(removeLineBreaks(data.desc))
 
@@ -94,7 +94,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [0.8, 0.8, 1, 1],
+              [0.7, 0.8, 1, 1],
               Extrapolation.CLAMP,
             ),
             {
@@ -108,7 +108,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [-35, -35, 0, 0],
+              [-60, -35, 0, 0],
               Extrapolation.CLAMP,
             ),
             {
@@ -132,7 +132,7 @@ export default function PeekCard({
 
   const deleteTask = (e) => {
     setData(base.filter((item) => item.id !== data.id))
-    close()
+    closeSheet()
   }
 
   const handleSubmitTitle = () => {
@@ -154,7 +154,7 @@ export default function PeekCard({
           round={10}
           width={30}
           color={color}
-          onPress={close}
+          onPress={() => closeSheet()}
         >
           <AntDesign
             name='arrowleft'
@@ -195,9 +195,9 @@ export default function PeekCard({
             placeholder={title}
             autoCapitalize={'words'}
             cursorColor={color?.accentColor}
-            selectionColor={color?.accentColor}
+            selectionColor={color?.accentColor + '40'}
             placeholderTextColor={color?.textColor}
-            onChangeText={setTitle}
+            onChangeText={(e) => setTitle(removeLineBreaks(e))}
             onSubmitEditing={handleSubmitTitle}
           >
             {title}
@@ -221,7 +221,7 @@ export default function PeekCard({
             selectionColor={color?.accentColor}
             placeholderTextColor={'grey'}
             blurOnSubmit={true}
-            onChangeText={setDesc}
+            onChangeText={(e) => setDesc(removeLineBreaks(e))}
             onSubmitEditing={handleSubmitDesc}
           >
             {desc}
@@ -287,10 +287,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Nunito_700Bold',
-    fontSize: 32,
+    fontSize: 34,
     width: '99%',
     textAlign: 'left',
-    lineHeight: 40,
+    lineHeight: 48,
     textAlignVertical: 'center',
     // backgroundColor: 'green',
   },
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   },
   float: {
     position: 'absolute',
-    top: 92,
+    top: 90,
     right: 5,
     fontFamily: 'Nunito_700Bold',
     backgroundColor: '#00000099',

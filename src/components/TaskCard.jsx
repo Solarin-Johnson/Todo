@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback as RNTouchableWithoutFeedback,
+  TouchableNativeFeedback,
 } from 'react-native'
 import { Entypo, FontAwesome6, Octicons } from '@expo/vector-icons'
 import Animated, {
@@ -38,6 +39,7 @@ export const TaskCard = ({
   const [fav, setfav] = useState()
   const [seeAll, setSeeAll] = useState(false)
   const [longPressTimer, setLongPressTimer] = useState(null)
+  const dragScale = useSharedValue(1)
 
   const handlePressIn = () => {
     const timer = setTimeout(() => {
@@ -65,8 +67,6 @@ export const TaskCard = ({
     setData(base.filter((item) => item.id !== data.id))
   }
 
-  const dragScale = useSharedValue(1)
-
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: withSpring(dragScale.value) }],
@@ -88,62 +88,69 @@ export const TaskCard = ({
         exiting={LightSpeedOutLeft}
         style={[styles.container, { backgroundColor: color.fgColor }]}
       >
-        <TouchableWithoutFeedback
+        <TouchableNativeFeedback
           style={[styles.child]}
+          onPress={onPress}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
+          background={TouchableNativeFeedback.Ripple(
+            color?.accentColor + '00',
+            false,
+          )}
           // onTouchCancel={() => (dragScale.value = 1)}
         >
-          <View style={styles.btn}>
-            <TouchableMadeEasier
-              round={true}
-              width={40}
-              color={color}
-              onPress={toggleFavourite}
-            >
-              {fav ? (
-                <Octicons
-                  name='star-fill'
-                  size={20}
-                  color={color?.accentColor}
-                />
-              ) : (
-                <Octicons
-                  name='star'
-                  size={20}
-                  color={color?.textColor + 'AB'}
-                />
-              )}
-            </TouchableMadeEasier>
-          </View>
-          <RNTouchableWithoutFeedback
-            // onPress={() => setSeeAll(!seeAll)}
-            onPress={() => {
-              onPress()
-            }}
-            // onLongPress={dragged}
-          >
+          <View style={styles.child}>
+            <View style={styles.btn}>
+              <TouchableMadeEasier
+                round={true}
+                width={40}
+                color={color}
+                onPress={toggleFavourite}
+              >
+                {fav ? (
+                  <Octicons
+                    name='star-fill'
+                    size={20}
+                    color={color?.accentColor}
+                  />
+                ) : (
+                  <Octicons
+                    name='star'
+                    size={20}
+                    color={color?.textColor + 'AB'}
+                  />
+                )}
+              </TouchableMadeEasier>
+            </View>
+            {/* <RNTouchableWithoutFeedback
+              // onPress={() => setSeeAll(!seeAll)}
+              onPress={() => {
+                onPress()
+              }}
+              // onLongPress={dragged}
+            > */}
             <View style={styles.body}>
               <Text style={[styles.title, { color: color.textColor }]}>
                 <Truncate text={removeLineBreaks(data.title)} limit={10} />
               </Text>
             </View>
-          </RNTouchableWithoutFeedback>
-          <View style={styles.btn}>
-            <TouchableMadeEasier
-              round={true}
-              width={40}
-              color={color}
-              onPress={deleteTask}
-            >
-              <Octicons
-                name='trash'
-                size={22}
-                color={color?.textColor + 'AB'}
-              />
-            </TouchableMadeEasier>
+            {/* </RNTouchableWithoutFeedback> */}
+            <View style={styles.btn}>
+              <TouchableMadeEasier
+                round={true}
+                width={40}
+                color={color}
+                onPress={deleteTask}
+              >
+                <Octicons
+                  name='trash'
+                  size={22}
+                  color={color?.textColor + 'AB'}
+                />
+              </TouchableMadeEasier>
+            </View>
           </View>
-        </TouchableWithoutFeedback>
+        </TouchableNativeFeedback>
       </Animated.View>
     </Animated.View>
   )

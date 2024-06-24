@@ -28,7 +28,6 @@ import Animated, {
 import PeekCard from './Peek'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useBackHandler } from '@react-native-community/hooks'
-import CustomFooter from './customFooter'
 
 export default function TaskList({ tasks, color, empty }) {
   const { width: screenWidth } = useWindowDimensions()
@@ -270,8 +269,8 @@ export default function TaskList({ tasks, color, empty }) {
           // footerComponent={CustomFooter}
           containerStyle={styles.sheet}
           // renderContent={PeekCard}
-          // enablePanDownToClose
-          keyboardBehavior='fillParent'
+          enablePanDownToClose
+          keyboardBehavior='interactive'
           android_keyboardInputMode='adjustResize'
           keyboardBlurBehavior='restore'
           index={peek ? 0 : -1}
@@ -285,7 +284,7 @@ export default function TaskList({ tasks, color, empty }) {
             setData={updateState}
             color={color}
             sheetRef={sheetRef}
-            close={closeSheet}
+            closeSheet={closeSheet}
           />
         </BottomSheet>
       )}
