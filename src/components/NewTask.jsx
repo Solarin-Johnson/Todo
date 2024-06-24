@@ -39,7 +39,7 @@ export default function NewTask({ color, close }) {
   useEffect(() => {
     // !descState
   }, [descState])
-
+  
   const AddTask = async (e) => {
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
