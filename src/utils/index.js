@@ -21,7 +21,7 @@ export const greetings = () => {
 export const Truncate = ({ text, limit }) => {
   const windowWidth = useWindowDimensions().width
   const maxChars = Math.floor(
-    (windowWidth - 20) / (limit !== undefined ? limit : 45),
+    (windowWidth - 20) / (limit !== undefined ? limit : 35),
   )
   const truncatedText =
     text.length > maxChars ? `${text.substring(0, maxChars)}...` : text

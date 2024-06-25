@@ -40,18 +40,23 @@ export const TaskCard = ({
   const [seeAll, setSeeAll] = useState(false)
   const [longPressTimer, setLongPressTimer] = useState(null)
   const dragScale = useSharedValue(1)
+  const [ripple, setRipple] = useState(false)
 
   const handlePressIn = () => {
     const timer = setTimeout(() => {
-      dragged()
-      dragScale.value = 1.03
-    }, 200)
+      setRipple(true)
+      setTimeout(() => {
+        dragged()
+        dragScale.value = 1.03
+      }, 100)
+    }, 100)
     setLongPressTimer(timer)
   }
 
   const handlePressOut = () => {
     if (longPressTimer) {
       clearTimeout(longPressTimer)
+      setRipple(false)
     }
   }
 
@@ -94,7 +99,7 @@ export const TaskCard = ({
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           background={TouchableNativeFeedback.Ripple(
-            color?.primaryColor + '00',
+            ripple ? color?.primaryColor + '00' : color?.fgColor,
             false,
           )}
           // onTouchCancel={() => (dragScale.value = 1)}

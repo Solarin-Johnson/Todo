@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import {
   StyleSheet,
   Text,
@@ -21,9 +21,10 @@ import { FontAwesome5 } from '@expo/vector-icons'
 import Button from '../components/Button'
 import { isAlphanumeric } from '../utils'
 import InputText from '../components/Input'
+import { NameContext } from '../context/NameContext'
 
 export default WelcomeScreen = ({ route }) => {
-  const { color, welcome } = route.params
+  const { color, welcome, uname } = route.params
   const responsive = StyleSheet.create({
     container: {
       flex: 1,
@@ -48,8 +49,9 @@ export default WelcomeScreen = ({ route }) => {
 }
 
 export const EnterName = ({ responsive, color }) => {
-  const [uname, setUname] = useState('')
   const InputRef = useRef(null)
+  const { name, setName } = useContext(NameContext)
+  const [uname, setUname] = useState(name)
 
   const handleTextChange = (inputText) => {
     if (inputText.length > 0 && !isAlphanumeric(inputText)) {
@@ -65,35 +67,32 @@ export const EnterName = ({ responsive, color }) => {
   return (
     <>
       <View style={styles.subContainer}>
-        <Text style={[styles.title, responsive.text]}>Hello there!</Text>
-        {/* <Text
-        style={[
-          styles.subTitle,
-          responsive.text,
-          { fontFamily: 'Raleway_500Medium', fontSize: 24 },
-        ]}
-      >
-        Welcome
-      </Text> */}
+        <Image
+          style={styles.logo}
+          source={require('../assets/splash.png')}
+          contentFit='cover'
+        />
+        <Text style={[styles.title, responsive.text]}>Todo</Text>
         <Text
           style={[
             styles.subTitle,
             { opacity: 0.7 },
             responsive.text,
-            { fontFamily: 'Raleway_400Regular', paddingTop: 10, fontSize: 16 },
+            { fontFamily: 'Raleway_400Regular', fontSize: 14 },
           ]}
         >
-          Enter your name to continue to Todo
+          Enter your name to continue
         </Text>
         <View
           style={[styles.inputContainer, { backgroundColor: color?.fgColor }]}
         >
-          <FontAwesome5 name='user' size={18} color={color.textColor} />
+          <FontAwesome5 name='user' size={18} color={color.textColor + 'cd'} />
           <InputText
             InputRef={InputRef}
             color={color}
             handleTextChange={handleTextChange}
             text={uname}
+            size={16}
             placeholder={'Enter your display name'}
           />
         </View>
@@ -106,7 +105,7 @@ export const EnterName = ({ responsive, color }) => {
             styleText={styles.buttonText}
             text='Continue'
             path={'home'}
-            action={() => saveData('uname', uname)}
+            action={() => setName(uname)}
           />
         </View>
       )}
@@ -181,26 +180,26 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     // fontFamily: 'Nunito_700Bold',
     letterSpacing: -0.8,
-    // paddingBottom: 10,
+    paddingBottom: 32,
     textAlign: 'center',
+    opacity: 0.8,
   },
   defText: {
     fontFamily: 'Nunito_500Medium',
   },
   subTitle: {
     textAlign: 'center',
-    fontSize: 14,
     fontWeight: '400',
-    paddingBottom: 6,
+    paddingBottom: 5,
   },
   inputContainer: {
     alignSelf: 'center',
     flexDirection: 'row',
     borderRadius: 8,
-    marginTop: 20,
+    marginTop: 10,
     alignItems: 'center',
     gap: 5,
     paddingHorizontal: 15,
@@ -233,6 +232,10 @@ const styles = StyleSheet.create({
   image: {
     flex: 0.6,
     width: '100%',
+  },
+  logo: {
+    height: 70,
+    marginBottom: 10,
   },
   bottomText: {
     alignSelf: 'center',

@@ -28,6 +28,7 @@ import {
 } from '@expo-google-fonts/dev'
 import { StatusBar } from 'expo-status-bar'
 import SettingsScreen from './src/screens/SettingsScreen'
+import { NameProvider } from './src/context/NameContext'
 
 const Stack = createNativeStackNavigator()
 export default function App() {
@@ -37,21 +38,18 @@ export default function App() {
   const colorScheme = useColorScheme()
 
   removeItemFromStorage('mode')
-  useEffect(() => {
-    const updateColor = async () => {
-      loadInit = await loadData('mode', 'automatic')
-      if (loadInit === 'automatic') {
-        setColor(colorScheme === 'dark' ? DarkMode : LightMode)
-      } else {
-        setColor(
-          loadInit === 'dark' ? DarkMode : loadInit === 'light' && LightMode,
-        )
-      }
-      console.log(colorScheme)
+  const updateColor = async () => {
+    loadInit = await loadData('mode', 'automatic')
+    if (loadInit === 'automatic') {
+      setColor(colorScheme === 'dark' ? DarkMode : LightMode)
+    } else {
+      setColor(
+        loadInit === 'dark' ? DarkMode : loadInit === 'light' && LightMode,
+      )
     }
-
-    updateColor()
-
+    console.log(colorScheme)
+  }
+  useEffect(() => {
     // const loadResources = async () => {
     //   try {
     //     // Load FontAwesome icons
@@ -66,6 +64,11 @@ export default function App() {
     FontAwesome.loadFont()
     // loadResources()
   }, [])
+
+  useEffect(() => {
+    updateColor()
+  }, [colorScheme])
+
   useEffect(() => {
     const updateUi = async () => {
       color && SystemUI.setBackgroundColorAsync(color.bgColor)
@@ -102,42 +105,53 @@ export default function App() {
     return null
   } else {
     return (
-      <NavigationContainer>
-        {/* <StatusBar backgroundColor='black' barStyle='light-content' /> */}
-        {color && (
-          <Stack.Navigator
-            initialRouteName={!uname ? 'welcome' : 'home'}
-            screenOptions={{
-              gestureEnabled: true,
-              // gestureDirection: 'horizontal',
-              headerShown: false,
-              cardOverlayEnabled: true,
-              animationEnabled: true,
-            }}
-          >
-            <Stack.Screen
-              name='welcome'
-              component={WelcomeScreen}
-              initialParams={{ color: color, welcome: true }}
-            />
-            <Stack.Screen
-              name='newUser'
-              component={WelcomeScreen}
-              initialParams={{ color: color, welcome: false }}
-            />
-            <Stack.Screen
-              name='home'
-              component={HomeScreen}
-              initialParams={{ color: color, uname: uname }}
-            />
-            <Stack.Screen
-              name='settings'
-              component={SettingsScreen}
-              initialParams={{ color: color, uname: uname }}
-            />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+      <NameProvider>
+        <NavigationContainer>
+          {/* <StatusBar backgroundColor='black' barStyle='light-content' /> */}
+          {color && (
+            <Stack.Navigator
+              initialRouteName={!uname ? 'welcome' : 'home'}
+              screenOptions={{
+                gestureEnabled: true,
+                // gestureDirection: 'horizontal',
+                headerShown: false,
+                cardOverlayEnabled: true,
+                animationEnabled: true,
+              }}
+            >
+              <Stack.Screen
+                name='welcome'
+                component={WelcomeScreen}
+                initialParams={{ color: color, welcome: true }}
+              />
+              <Stack.Screen
+                name='newUser'
+                component={WelcomeScreen}
+                initialParams={{ color: color, welcome: false }}
+              />
+              <Stack.Screen
+                name='home'
+                component={HomeScreen}
+                initialParams={{ color: color }}
+              />
+              <Stack.Screen
+                name='settings'
+                component={SettingsScreen}
+                initialParams={{ color: color }}
+                options={{
+                  headerShown: true,
+                  title: 'Settings',
+                  headerBackTitle: 'Back',
+                  headerTintColor: color?.textColor,
+                  headerStyle: {
+                    backgroundColor: color.bgColor,
+                  },
+                }}
+              />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </NameProvider>
     )
   }
 }

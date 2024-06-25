@@ -1,24 +1,25 @@
 import { StatusBar } from 'expo-status-bar'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
 import { Truncate, greetings } from '../utils'
 import { useNavigation } from '@react-navigation/native'
 import TouchableMadeEasier from '../components/touchables'
+import { NameContext } from '../context/NameContext'
 
-export default Header = ({ uname, color }) => {
+export default Header = ({ color }) => {
   const navigation = useNavigation()
   const [mode, setMode] = useState()
+  const { name } = useContext(NameContext)
+
   useEffect(() => {
     // loadData()
   }, [])
   return (
     <View style={styles.head}>
-      {uname && (
-        <Text style={[styles.greetings, { color: color?.primaryColor }]}>
-          {greetings()}, <Truncate text={uname} />
-        </Text>
-      )}
+      <Text style={[styles.greetings, { color: color?.primaryColor }]}>
+        {greetings()}, {name && <Truncate text={name} />}
+      </Text>
       <TouchableMadeEasier
         round={10}
         width={40}
