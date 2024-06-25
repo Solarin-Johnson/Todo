@@ -7,36 +7,69 @@ import { AntDesign } from '@expo/vector-icons'
 import { TouchableOpacity } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { NameContext } from '../context/NameContext'
+import { RadioBtn } from '../components/Button'
 
-export default function SettingsScreen({ route }) {
-  const navigation = useNavigation()
-  const { color } = route.params
-  const { name } = useContext(NameContext)
+export default function SettingsScreen({ navigation }) {
+  const { name, color, mode, setMode } = useContext(NameContext)
+  useEffect(() => {
+    navigation.setOptions({
+      headerTintColor: color?.textColor,
+      headerStyle: {
+        backgroundColor: color.fgColor,
+        elevation: 1,
+      },
+      headerTitleStyle: {
+        fontWeight: 'normal',
+      },
+    })
+  }, [color, navigation])
 
-  return (
-    <GestureHandlerRootView>
-      <SafeAreaView
-        style={[{ backgroundColor: color?.fgColor }, styles.container]}
-      >
-        <SettingsCard
-          color={color}
-          onPress={() => navigation.navigate('newUser')}
+  const themes = [
+    {
+      name: 'Automatic',
+      mode: 'automatic',
+      onPress: () => setMode('automatic'),
+    },
+    { name: 'Light', mode: 'light', onPress: () => setMode('light') },
+    { name: 'Dark', mode: 'dark', onPress: () => setMode('dark') },
+  ]
+  if (color !== undefined && name) {
+    return (
+      <GestureHandlerRootView>
+        <SafeAreaView
+          style={[{ backgroundColor: color?.fgColor }, styles.container]}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              fontFamily: 'Nunito_600SemiBold',
-              color: color?.primaryColor,
-            }}
+          <SettingsCard
+            color={color}
+            onPress={() => navigation.navigate('newUser')}
           >
-            {name}
+            <Text style={[styles.text, { color: color?.primaryColor }]}>
+              {name}
+            </Text>
+            <AntDesign name='edit' size={20} color={color?.textColor + 'cd'} />
+          </SettingsCard>
+
+          <Text style={[styles.head, { color: color?.primaryColor }]}>
+            Theme
           </Text>
-          <AntDesign name='edit' size={20} color={color?.textColor + 'cd'} />
-        </SettingsCard>
-        <Text style={[styles.head, { color: color?.textColor }]}>Theme</Text>
-      </SafeAreaView>
-    </GestureHandlerRootView>
-  )
+          <View style={{ gap: 18 }}>
+            {themes.map((theme, index) => (
+              <SettingsCard color={color} key={index} onPress={theme.onPress}>
+                <Text style={[styles.text, { color: color?.primaryColor }]}>
+                  {theme.name}
+                </Text>
+                <RadioBtn
+                  size={20}
+                  state={mode === theme.mode}
+                  color={color?.textColor + 'cd'}
+                />
+              </SettingsCard>
+            ))}
+          </View>
+        </SafeAreaView>
+      </GestureHandlerRootView>
+    )
+  }
 }
 
 const SettingsCard = ({ onPress, children, color }) => {
@@ -44,7 +77,7 @@ const SettingsCard = ({ onPress, children, color }) => {
     <View
       style={{
         backgroundColor: color?.fgColor,
-        borderColor: '#D3D3D340',
+        borderColor: '#97979740',
         borderWidth: 1,
         borderRadius: 10,
       }}
@@ -60,6 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
+    paddingTop: 8,
   },
   //   head: {
   //     paddingTop: 50,
@@ -73,13 +107,19 @@ const styles = StyleSheet.create({
   //   },
   head: {
     paddingTop: 40,
-    fontSize: 16.5,
-    opacity: 0.5,
-    fontFamily: 'Nunito_600SemiBold',
+    paddingBottom: 15,
+    fontSize: 15,
+    opacity: 0.7,
+    paddingLeft: 1,
+    fontFamily: 'Raleway_600SemiBold',
   },
   card: {
     padding: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  text: {
+    fontSize: 16,
+    fontFamily: 'Nunito_600SemiBold',
   },
 })

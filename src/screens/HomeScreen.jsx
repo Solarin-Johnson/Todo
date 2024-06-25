@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   ToastAndroid,
   BackHandler,
@@ -18,23 +18,18 @@ import NewTask from '../components/NewTask'
 import Header from '../navigation/Header'
 import TaskList from '../components/Tasks'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { NameContext } from '../context/NameContext'
 
-export default HomeScreen = ({ route }) => {
+export default HomeScreen = () => {
   const navigation = useNavigation()
-  const { color } = route.params
   const [isBackPressed, setIsBackPressed] = useState(false)
   const [uname, setuname] = useState()
   const [tasks, settasks] = useState('')
   const [newTask, setnewTask] = useState(false)
   // removeItemFromStorage('tasks')
-  const CheckUname = async () => {
-    const loadUname = await loadData('uname', '')
-    if (loadUname !== '') {
-      setuname(loadUname)
-    } else {
-      setuname(false)
-    }
-  }
+  const { name, color } = useContext(NameContext)
+  // const CheckUname = async () => {
+
   const LoadTasks = async () => {
     const loadTask = await loadData('tasks', '')
     if (loadTask !== '') {
@@ -47,9 +42,10 @@ export default HomeScreen = ({ route }) => {
     LoadTasks()
   }, [newTask])
   useEffect(() => {
-    CheckUname()
+    // CheckUname()
     LoadTasks()
   }, [])
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -73,43 +69,44 @@ export default HomeScreen = ({ route }) => {
         BackHandler.removeEventListener('hardwareBackPress', onBackPress)
     }, [navigation]),
   )
-
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView
-        style={[{ backgroundColor: color?.fgColor }, styles.container]}
-      >
-        <Header color={color} uname={uname} />
-        {!tasks || tasks.length < 1 ? (
-          <NoTask color={color} />
-        ) : (
-          <TaskList
-            tasks={tasks}
-            color={color}
-            empty={(e) => e && settasks('')}
-          />
-        )}
-        <View
-          style={[
-            { backgroundColor: color?.accentColor },
-            styles.plusContainer,
-          ]}
+  if (color !== undefined) {
+    return (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView
+          style={[{ backgroundColor: color?.fgColor }, styles.container]}
         >
-          {!newTask && (
-            <TouchableNativeFeedback
-              background={TouchableNativeFeedback.Ripple('#33333', false)}
-              onPress={() => setnewTask(true)}
-            >
-              <View style={styles.plus}>
-                <FontAwesome6 name='plus' size={24} color={color?.bgColor} />
-              </View>
-            </TouchableNativeFeedback>
+          <Header color={color} uname={name} />
+          {!tasks || tasks.length < 1 ? (
+            <NoTask color={color} />
+          ) : (
+            <TaskList
+              tasks={tasks}
+              color={color}
+              empty={(e) => e && settasks('')}
+            />
           )}
-        </View>
-      </SafeAreaView>
-      {newTask && <NewTask color={color} close={setnewTask} />}
-    </GestureHandlerRootView>
-  )
+          <View
+            style={[
+              { backgroundColor: color?.accentColor },
+              styles.plusContainer,
+            ]}
+          >
+            {!newTask && (
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple('#33333', false)}
+                onPress={() => setnewTask(true)}
+              >
+                <View style={styles.plus}>
+                  <FontAwesome6 name='plus' size={24} color={color?.bgColor} />
+                </View>
+              </TouchableNativeFeedback>
+            )}
+          </View>
+        </SafeAreaView>
+        {newTask && <NewTask color={color} close={setnewTask} />}
+      </GestureHandlerRootView>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

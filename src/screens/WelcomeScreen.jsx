@@ -24,7 +24,9 @@ import InputText from '../components/Input'
 import { NameContext } from '../context/NameContext'
 
 export default WelcomeScreen = ({ route }) => {
-  const { color, welcome, uname } = route.params
+  const { welcome } = route.params
+  const { color } = useContext(NameContext)
+
   const responsive = StyleSheet.create({
     container: {
       flex: 1,
@@ -73,7 +75,7 @@ export const EnterName = ({ responsive, color }) => {
           contentFit='cover'
         />
         <Text style={[styles.title, responsive.text]}>Todo</Text>
-        <Text
+        {/* <Text
           style={[
             styles.subTitle,
             { opacity: 0.7 },
@@ -82,7 +84,7 @@ export const EnterName = ({ responsive, color }) => {
           ]}
         >
           Enter your name to continue
-        </Text>
+        </Text> */}
         <View
           style={[styles.inputContainer, { backgroundColor: color?.fgColor }]}
         >

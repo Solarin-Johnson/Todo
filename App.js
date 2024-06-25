@@ -37,7 +37,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true)
   const colorScheme = useColorScheme()
 
-  removeItemFromStorage('mode')
+  // removeItemFromStorage('mode')
   const updateColor = async () => {
     loadInit = await loadData('mode', 'automatic')
     if (loadInit === 'automatic') {
@@ -107,7 +107,6 @@ export default function App() {
     return (
       <NameProvider>
         <NavigationContainer>
-          {/* <StatusBar backgroundColor='black' barStyle='light-content' /> */}
           {color && (
             <Stack.Navigator
               initialRouteName={!uname ? 'welcome' : 'home'}
@@ -115,37 +114,27 @@ export default function App() {
                 gestureEnabled: true,
                 // gestureDirection: 'horizontal',
                 headerShown: false,
-                cardOverlayEnabled: true,
                 animationEnabled: true,
               }}
             >
               <Stack.Screen
                 name='welcome'
                 component={WelcomeScreen}
-                initialParams={{ color: color, welcome: true }}
+                initialParams={{ welcome: true }}
               />
               <Stack.Screen
                 name='newUser'
                 component={WelcomeScreen}
-                initialParams={{ color: color, welcome: false }}
+                initialParams={{ welcome: false }}
               />
-              <Stack.Screen
-                name='home'
-                component={HomeScreen}
-                initialParams={{ color: color }}
-              />
+              <Stack.Screen name='home' component={HomeScreen} />
               <Stack.Screen
                 name='settings'
                 component={SettingsScreen}
-                initialParams={{ color: color }}
                 options={{
                   headerShown: true,
                   title: 'Settings',
                   headerBackTitle: 'Back',
-                  headerTintColor: color?.textColor,
-                  headerStyle: {
-                    backgroundColor: color.bgColor,
-                  },
                 }}
               />
             </Stack.Navigator>

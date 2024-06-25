@@ -122,7 +122,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [0, -15, -15, -5],
+              [0, -15, -5, -5],
               Extrapolation.CLAMP,
             ),
             {

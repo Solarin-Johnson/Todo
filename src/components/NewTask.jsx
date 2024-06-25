@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -15,8 +15,9 @@ import TouchableMadeEasier from './touchables'
 import { loadData, saveData } from '../utils/store'
 import { FocusInput } from '../utils'
 import { useBackHandler } from '@react-native-community/hooks'
+import { NameProvider } from '../context/NameContext'
 
-export default function NewTask({ color, close }) {
+export default function NewTask({ close, color }) {
   const translateY = useRef(new Animated.Value(300)).current
   const slide = useRef(new Animated.Value(100)).current
   const InputRef = useRef(null)

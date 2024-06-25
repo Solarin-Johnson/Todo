@@ -7,10 +7,10 @@ import { useNavigation } from '@react-navigation/native'
 import TouchableMadeEasier from '../components/touchables'
 import { NameContext } from '../context/NameContext'
 
-export default Header = ({ color }) => {
+export default Header = () => {
   const navigation = useNavigation()
   const [mode, setMode] = useState()
-  const { name } = useContext(NameContext)
+  const { name, color } = useContext(NameContext)
 
   useEffect(() => {
     // loadData()

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native'
 import TouchableMadeEasier from '../components/touchables'
 import { FontAwesome } from '@expo/vector-icons'
@@ -6,12 +6,14 @@ import Animated, {
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated'
+import { NameContext } from '../context/NameContext'
 
-export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
+export default function TaskNav({ state, scrollLeft, scrollRef }) {
   const [fav, setfav] = useState(false)
   const [task, settask] = useState(false)
   const [current, setCurrent] = useState(scrollLeft)
   const [prev, setPrev] = useState(0)
+  const { color } = useContext(NameContext)
   const { width: screenWidth } = useWindowDimensions()
 
   const clickFav = () => {
@@ -29,7 +31,7 @@ export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
     const iconColor = interpolateColor(
       scrollLeft.value,
       [0, 100, screenWidth],
-      [color.accentColor, color.textColor + '99', color.textColor + '99'],
+      [color?.accentColor, color?.textColor + '99', color?.textColor + '99'],
     )
 
     return {
@@ -41,7 +43,7 @@ export default function TaskNav({ color, state, scrollLeft, scrollRef }) {
     const iconColor = interpolateColor(
       scrollLeft.value,
       [0, 100, screenWidth],
-      [color.textColor + 'cc', color.textColor + 'cc', color.accentColor],
+      [color?.textColor + 'cc', color?.textColor + 'cc', color?.accentColor],
     )
 
     return {
