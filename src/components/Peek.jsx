@@ -94,7 +94,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [0.7, 0.8, 1, 1],
+              [0.6, 0.8, 1, 1],
               Extrapolation.CLAMP,
             ),
             {
@@ -108,7 +108,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [-60, -35, 0, 0],
+              [-100, -35, 0, 0],
               Extrapolation.CLAMP,
             ),
             {
@@ -218,7 +218,7 @@ export default function PeekCard({
             multiline
             maxLength={200}
             cursorColor={color?.accentColor}
-            selectionColor={color?.accentColor}
+            selectionColor={color?.accentColor + '40'}
             placeholderTextColor={'grey'}
             blurOnSubmit={true}
             onChangeText={(e) => setDesc(removeLineBreaks(e))}
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'red',
     flex: 1,
     justifyContent: 'center',
-    // minHeight: 90,
+    minHeight: 160,
     maxHeight: 160,
     // width: '84%',
   },

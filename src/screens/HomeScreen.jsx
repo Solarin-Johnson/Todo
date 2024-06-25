@@ -7,7 +7,7 @@ import {
   View,
   TouchableNativeFeedback,
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useBackHandler } from '@react-native-community/hooks'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Truncate, greetings } from '../utils'
@@ -51,19 +51,28 @@ export default HomeScreen = ({ route }) => {
     LoadTasks()
   }, [])
 
-  useBackHandler(() => {
-    if (!newTask) {
-      if (isBackPressed) {
-        BackHandler.exitApp()
-        return true // Prevent default behavior
-      } else {
-        ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT)
-        setIsBackPressed(true) // Set flag to true
-        setTimeout(() => setIsBackPressed(false), 2000) // Reset flag after 2 seconds
-        return true // Prevent default behavior
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (!newTask) {
+          if (isBackPressed) {
+            BackHandler.exitApp()
+            return true // Prevent default behavior
+          } else {
+            ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT)
+            setIsBackPressed(true) // Set flag to true
+            setTimeout(() => setIsBackPressed(false), 2000) // Reset flag after 2 seconds
+            return true // Prevent default behavior
+          }
+        }
       }
-    }
-  })
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress)
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress)
+    }, [navigation]),
+  )
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

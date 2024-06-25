@@ -140,8 +140,10 @@ export default function TaskList({ tasks, color, empty }) {
   }
 
   useBackHandler(() => {
-    closeSheet()
-    return true
+    if (sheetRef.current && sheetRef.current.index !== -1) {
+      closeSheet()
+      return true
+    }
   })
 
   return (
@@ -297,7 +299,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   head: {
-    marginTop: 28,
+    marginTop: 15,
     alignContent: 'flex-start',
   },
   page: {

@@ -62,7 +62,7 @@ export default function NewTask({ color, close }) {
   }
 
   useBackHandler(() => {
-    // close(false)
+    close(false)
     return true
   })
 

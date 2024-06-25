@@ -27,6 +27,7 @@ import {
   Raleway_700Bold,
 } from '@expo-google-fonts/dev'
 import { StatusBar } from 'expo-status-bar'
+import SettingsScreen from './src/screens/SettingsScreen'
 
 const Stack = createNativeStackNavigator()
 export default function App() {
@@ -113,7 +114,6 @@ export default function App() {
               cardOverlayEnabled: true,
               animationEnabled: true,
             }}
-            mode='modal'
           >
             <Stack.Screen
               name='welcome'
@@ -128,6 +128,11 @@ export default function App() {
             <Stack.Screen
               name='home'
               component={HomeScreen}
+              initialParams={{ color: color, uname: uname }}
+            />
+            <Stack.Screen
+              name='settings'
+              component={SettingsScreen}
               initialParams={{ color: color, uname: uname }}
             />
           </Stack.Navigator>

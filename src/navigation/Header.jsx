@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
 import { Truncate, greetings } from '../utils'
+import { useNavigation } from '@react-navigation/native'
+import TouchableMadeEasier from '../components/touchables'
 
 export default Header = ({ uname, color }) => {
+  const navigation = useNavigation()
   const [mode, setMode] = useState()
   useEffect(() => {
     // loadData()
@@ -16,18 +19,25 @@ export default Header = ({ uname, color }) => {
           {greetings()}, <Truncate text={uname} />
         </Text>
       )}
-      <FontAwesome6 name='bars-staggered' size={24} color={color?.textColor} />
+      <TouchableMadeEasier
+        round={10}
+        width={40}
+        color={color}
+        onPress={() => navigation.navigate('settings')}
+      >
+        <FontAwesome6 name='bars' size={24} color={color?.textColor} />
+      </TouchableMadeEasier>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   head: {
-    paddingTop: 5,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    paddingLeft: 20,
   },
   greetings: {
     fontSize: 20,
