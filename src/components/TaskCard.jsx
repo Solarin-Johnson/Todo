@@ -45,7 +45,7 @@ export const TaskCard = ({
     const timer = setTimeout(() => {
       dragged()
       dragScale.value = 1.03
-    }, 100)
+    }, 200)
     setLongPressTimer(timer)
   }
 
@@ -94,7 +94,7 @@ export const TaskCard = ({
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
           background={TouchableNativeFeedback.Ripple(
-            color?.accentColor + '00',
+            color?.primaryColor + '00',
             false,
           )}
           // onTouchCancel={() => (dragScale.value = 1)}

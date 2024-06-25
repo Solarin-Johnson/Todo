@@ -12,7 +12,9 @@ export default function SettingsScreen({ route }) {
     <SafeAreaView
       style={[{ backgroundColor: color?.fgColor }, styles.container]}
     >
-      <Text>Settings Screen</Text>
+      <View>
+        <Text>Settings Screen</Text>
+      </View>
     </SafeAreaView>
   )
 }
@@ -21,5 +23,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 10,
-  },
+    },
+    head: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 10,
+      paddingLeft: 20,
+    },
 })

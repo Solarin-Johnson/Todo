@@ -21,7 +21,7 @@ export default function NewTask({ color, close }) {
   const slide = useRef(new Animated.Value(100)).current
   const InputRef = useRef(null)
   const DescRef = useRef(null)
-  const [input, setinput] = useState()
+  const [input, setinput] = useState('')
   const [descState, setdescState] = useState(false)
   const [desc, setdesc] = useState('')
   const [fav, setfav] = useState(false)
@@ -96,7 +96,7 @@ export default function NewTask({ color, close }) {
             handleTextChange={(e) => setdesc(e)}
             color={color}
             placeholder={'Add description'}
-            maxLength={200}
+            maxLength={180}
             size={15}
             padding={'0'}
             autoFocus={true}
@@ -140,9 +140,11 @@ export default function NewTask({ color, close }) {
             color={color}
             onPress={() => input && AddTask()}
           >
-            <Text style={[styles.done, { color: color?.accentColor }]}>
-              Done
-            </Text>
+            {input.trim().length > 0 && (
+              <Text style={[styles.done, { color: color?.accentColor }]}>
+                Done
+              </Text>
+            )}
           </TouchableMadeEasier>
         </View>
       </Animated.View>

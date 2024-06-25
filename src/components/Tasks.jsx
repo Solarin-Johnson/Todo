@@ -259,7 +259,7 @@ export default function TaskList({ tasks, color, empty }) {
       {peek && (
         <BottomSheet
           ref={sheetRef}
-          snapPoints={[280, 500]}
+          snapPoints={[290, 500]}
           backgroundStyle={{
             backgroundColor: color.fgColor,
             borderTopLeftRadius: 32,

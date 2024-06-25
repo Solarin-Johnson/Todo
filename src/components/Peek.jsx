@@ -94,7 +94,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [0.6, 0.8, 1, 1],
+              [0.6, 0.82, 1, 1],
               Extrapolation.CLAMP,
             ),
             {
@@ -108,7 +108,21 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [-100, -35, 0, 0],
+              [-100, -32, 0, 0],
+              Extrapolation.CLAMP,
+            ),
+            {
+              duration: 150,
+              easing: Easing.out(Easing.ease),
+            },
+          ),
+        },
+        {
+          translateY: withTiming(
+            interpolate(
+              animatedIndex.value,
+              [-1, 0, 0.5, 1],
+              [0, -15, -15, -5],
               Extrapolation.CLAMP,
             ),
             {
@@ -188,7 +202,13 @@ export default function PeekCard({
       <View style={styles.body}>
         <Animated.View style={[styles.titleLabel, animatedTitle]}>
           <BottomSheetTextInput
-            style={[styles.title, { color: color.textColor }]}
+            style={[
+              styles.title,
+              {
+                color: color.textColor,
+                fontSize: interpolate(title.length, [0, 40], [42, 32]),
+              },
+            ]}
             maxLength={50}
             multiline={true}
             blurOnSubmit={true}
@@ -216,7 +236,7 @@ export default function PeekCard({
             style={[styles.desc, { color: color.textColor }]}
             placeholder={desc ? desc : 'Add description'}
             multiline
-            maxLength={200}
+            maxLength={180}
             cursorColor={color?.accentColor}
             selectionColor={color?.accentColor + '40'}
             placeholderTextColor={'grey'}
@@ -252,15 +272,17 @@ export default function PeekCard({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    // alignItems: 'center',
     paddingHorizontal: 10,
     minWidth: '100%',
-    gap: 10,
+    // gap: 10,
+    // backgroundColor: 'grey',
   },
   head: {
     width: '100%',
     flexDirection: 'row',
-    paddingTop: 6,
+    // paddingTop: 6,
+    // backgroundColor: 'red',
   },
   options: {
     flex: 1,
@@ -275,22 +297,23 @@ const styles = StyleSheet.create({
     justifyContent: 'start',
     alignItems: 'start',
     paddingHorizontal: 8,
-    // backgroundColor: 'red',
+    // backgroundColor: 'blue',
   },
   titleLabel: {
     // backgroundColor: 'red',
     flex: 1,
     justifyContent: 'center',
-    minHeight: 160,
-    maxHeight: 160,
+    minHeight: 220,
+    maxHeight: 220,
+    overflow: 'hidden',
     // width: '84%',
   },
   title: {
     fontFamily: 'Nunito_700Bold',
-    fontSize: 34,
-    width: '99%',
+    width: '96.5%',
     textAlign: 'left',
-    lineHeight: 48,
+    // lineHeight: 50,
+    // paddingBottom: 7,
     textAlignVertical: 'center',
     // backgroundColor: 'green',
   },
@@ -299,7 +322,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignContent: 'center',
     alignItems: 'center',
-    paddingTop: 94,
+    paddingTop: 80,
     maxWidth: '100%',
   },
   desc: {
@@ -312,10 +335,10 @@ const styles = StyleSheet.create({
   },
   float: {
     position: 'absolute',
-    top: 90,
+    top: 98,
     right: 5,
     fontFamily: 'Nunito_700Bold',
-    backgroundColor: '#00000099',
+    // backgroundColor: 'grey',
     width: 45,
     height: 45,
     alignItems: 'center',
