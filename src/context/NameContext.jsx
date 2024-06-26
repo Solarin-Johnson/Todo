@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import { loadData, saveData } from '../utils/store'
 import { Alert, useColorScheme } from 'react-native'
 import { DarkMode, LightMode } from '../styles/colors'
+import * as SystemUI from 'expo-system-ui'
 
 export const NameContext = createContext()
 
@@ -52,7 +53,17 @@ export const NameProvider = ({ children }) => {
       saveData('mode', mode)
       updateColor()
     }
+
   }, [mode])
+
+  useEffect(() => {
+    const updateUi = async () => {
+      color && SystemUI.setBackgroundColorAsync(color.bgColor)
+    }
+    updateUi()
+  }, [color])
+
+  useEffect(() => {}, [color])
 
   return (
     <NameContext.Provider

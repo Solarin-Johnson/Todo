@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useBackHandler } from '@react-native-community/hooks'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, Octicons } from '@expo/vector-icons'
 import { TouchableOpacity } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { NameContext } from '../context/NameContext'
@@ -52,7 +52,7 @@ export default function SettingsScreen({ navigation }) {
           <Text style={[styles.head, { color: color?.primaryColor }]}>
             Theme
           </Text>
-          <View style={{ gap: 18 }}>
+          <View style={{ gap: 15 }}>
             {themes.map((theme, index) => (
               <SettingsCard color={color} key={index} onPress={theme.onPress}>
                 <Text style={[styles.text, { color: color?.primaryColor }]}>
@@ -66,6 +66,18 @@ export default function SettingsScreen({ navigation }) {
               </SettingsCard>
             ))}
           </View>
+          <Text style={[styles.head, { color: color?.primaryColor }]}>
+            Delete all tasks
+          </Text>
+          <SettingsCard
+            color={color}
+            onPress={() => navigation.navigate('newUser')}
+          >
+            <Text style={[styles.text, { color: color?.primaryColor }]}>
+              Delete
+            </Text>
+            <Octicons name='trash' size={20} color={color?.textColor + 'AB'} />
+          </SettingsCard>
         </SafeAreaView>
       </GestureHandlerRootView>
     )
@@ -77,7 +89,7 @@ const SettingsCard = ({ onPress, children, color }) => {
     <View
       style={{
         backgroundColor: color?.fgColor,
-        borderColor: '#97979740',
+        borderColor: '#97979735',
         borderWidth: 1,
         borderRadius: 10,
       }}

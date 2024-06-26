@@ -14,7 +14,6 @@ import HomeScreen from './src/screens/HomeScreen'
 
 import { FontAwesome } from '@expo/vector-icons'
 
-import * as SystemUI from 'expo-system-ui'
 import {
   useFonts,
   Nunito_400Regular,
@@ -69,12 +68,7 @@ export default function App() {
     updateColor()
   }, [colorScheme])
 
-  useEffect(() => {
-    const updateUi = async () => {
-      color && SystemUI.setBackgroundColorAsync(color.bgColor)
-    }
-    updateUi()
-  }, [color])
+ 
 
   let [fontsLoaded] = useFonts({
     Nunito_400Regular,
