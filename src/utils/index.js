@@ -57,3 +57,9 @@ export function removeLineBreaks(inputString) {
   // Replace all line breaks with an empty string
   return inputString.replace(/(\r\n|\n|\r)/gm, '').trim()
 }
+
+export const STYLES = {
+  automatic: 'default',
+  dark: 'dark-content',
+  light: 'light-content',
+}

@@ -15,7 +15,7 @@ import TouchableMadeEasier from './touchables'
 import { loadData, saveData } from '../utils/store'
 import { FocusInput } from '../utils'
 import { useBackHandler } from '@react-native-community/hooks'
-import { NameProvider } from '../context/NameContext'
+import { NameContext, NameProvider } from '../context/NameContext'
 
 export default function NewTask({ close, color }) {
   const translateY = useRef(new Animated.Value(300)).current
@@ -26,6 +26,7 @@ export default function NewTask({ close, color }) {
   const [descState, setdescState] = useState(false)
   const [desc, setdesc] = useState('')
   const [fav, setfav] = useState(false)
+  const { tasks, setTasks } = useContext(NameContext)
   const slideUp = () => {
     Animated.timing(translateY, {
       toValue: 0, // Adjust this value to control the distance of the slide-up
@@ -42,24 +43,23 @@ export default function NewTask({ close, color }) {
   }, [descState])
 
   const AddTask = async (e) => {
-    const loadTask = await loadData('tasks', '')
-    if (loadTask !== '') {
-      const tasks = JSON.parse(loadTask)
-      tasks.push({
-        id: parseInt(tasks.length),
-        title: input,
-        desc: desc,
-        fav: fav,
-      })
-      await saveData('tasks', JSON.stringify(tasks))
-      close(false)
+    const loadTask = await tasks
+    if (loadTask) {
+      const newTasks = loadTask
+      console.log(newTasks)
+      setTasks((prev) => [
+        ...prev,
+        {
+          id: String(newTasks.length),
+          title: input,
+          desc: desc,
+          fav: fav,
+        },
+      ])
     } else {
-      await saveData(
-        'tasks',
-        JSON.stringify([{ id: 0, title: input, desc: desc, fav: fav }]),
-      )
-      close(false)
+      await setTasks([{ id: '0', title: input, desc: desc, fav: fav }])
     }
+    close(false)
   }
 
   useBackHandler(() => {

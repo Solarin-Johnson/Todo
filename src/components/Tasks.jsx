@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   FlatList,
   Dimensions,
   TouchableWithoutFeedback,
+  RefreshControl,
 } from 'react-native'
 import TaskNav from '../navigation/TasksNav'
 import { TaskCard } from './TaskCard'
@@ -13,7 +14,7 @@ import DraggableFlatList, {
   NestableDraggableFlatList,
   NestableScrollContainer,
 } from 'react-native-draggable-flatlist'
-import { saveData } from '../utils/store'
+import { loadData, saveData } from '../utils/store'
 import NoTask from './NoTask'
 import Animated, {
   useSharedValue,
@@ -23,11 +24,14 @@ import Animated, {
   withSpring,
   withTiming,
   Easing,
+  interpolate,
+  Extrapolation,
 } from 'react-native-reanimated'
 
 import PeekCard from './Peek'
 import BottomSheet from '@gorhom/bottom-sheet'
 import { useBackHandler } from '@react-native-community/hooks'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export default function TaskList({ tasks, color, empty }) {
   const { width: screenWidth } = useWindowDimensions()
@@ -84,10 +88,18 @@ export default function TaskList({ tasks, color, empty }) {
           }),
         },
       ],
-      width: withTiming(width, {
-        duration: 500,
-        easing: Easing.out(Easing.exp),
-      }),
+      width: withTiming(
+        interpolate(
+          translateX,
+          [0, 10, translateX * 1.5],
+          [24, translateX, translateX * 1.5],
+          Extrapolation.CLAMP,
+        ),
+        {
+          duration: 500,
+          easing: Easing.out(Easing.exp),
+        },
+      ),
     }
   })
 
@@ -123,13 +135,13 @@ export default function TaskList({ tasks, color, empty }) {
   const handleSheetChanges = (index) => {
     setSheetIndex(index)
     if (index === -1) {
-      fadeOpacity.value = withTiming(0, { duration: 100 })
+      fadeOpacity.value = withTiming(0.2, { duration: 100 })
       setFade(false)
       setPeek(false)
     } else if (index === 0) {
-      fadeOpacity.value = withTiming(0.8, { duration: 200 })
+      fadeOpacity.value = withTiming(0.6, { duration: 200 })
     } else {
-      fadeOpacity.value = withTiming(1, { duration: 200 })
+      fadeOpacity.value = withTiming(0.9, { duration: 200 })
     }
   }
 
@@ -145,6 +157,17 @@ export default function TaskList({ tasks, color, empty }) {
       return true
     }
   })
+
+  const [refreshing, setRefreshing] = useState(false)
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true)
+    const loadTask = await loadData('tasks', '')
+    setData(loadTask !== '' ? JSON.parse(loadTask) : [])
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 500)
+  }, [])
 
   return (
     <>
@@ -193,8 +216,8 @@ export default function TaskList({ tasks, color, empty }) {
           onScrollEndDrag={(e) => setScrollLeft(e.nativeEvent.contentOffset.x)}
           scrollEventThrottle={-200}
           snapToOffsets={[0, screenWidth]} // Snap to each page
-          overScrollMode='never'
-          // alwaysBounceHorizontal={true}
+          overScrollMode='always'
+          alwaysBounceHorizontal={true}
           decelerationRate='fast'
           contentContainerStyle={styles.scroll}
         >
@@ -229,6 +252,14 @@ export default function TaskList({ tasks, color, empty }) {
           {data.length > 0 && (
             <NestableScrollContainer
               style={[styles.page, { width: screenWidth }]}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  colors={Array(color?.accentColor)}
+                  progressBackgroundColor={color?.bgColor}
+                />
+              }
             >
               <NestableDraggableFlatList
                 data={data}
@@ -279,15 +310,17 @@ export default function TaskList({ tasks, color, empty }) {
           animateOnMount={true}
           onChange={handleSheetChanges}
         >
-          <PeekCard
-            index={sheetIndex}
-            data={peek}
-            base={data}
-            setData={updateState}
-            color={color}
-            sheetRef={sheetRef}
-            closeSheet={closeSheet}
-          />
+          <ScrollView>
+            <PeekCard
+              index={sheetIndex}
+              data={peek}
+              base={data}
+              setData={updateState}
+              color={color}
+              sheetRef={sheetRef}
+              closeSheet={closeSheet}
+            />
+          </ScrollView>
         </BottomSheet>
       )}
     </>
@@ -317,6 +350,7 @@ const styles = StyleSheet.create({
     borderRadius: 900,
   },
   scroll: {
+    overflow: 'hidden',
     // paddingBottom: 10,
   },
   sheet: {

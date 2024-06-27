@@ -28,6 +28,7 @@ import {
 import { StatusBar } from 'expo-status-bar'
 import SettingsScreen from './src/screens/SettingsScreen'
 import { NameProvider } from './src/context/NameContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Stack = createNativeStackNavigator()
 export default function App() {
@@ -36,7 +37,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true)
   const colorScheme = useColorScheme()
 
-  // removeItemFromStorage('mode')
+  // removeItemFromStorage('tasks')
+  // AsyncStorage.clear()
   const updateColor = async () => {
     loadInit = await loadData('mode', 'automatic')
     if (loadInit === 'automatic') {
@@ -67,8 +69,6 @@ export default function App() {
   useEffect(() => {
     updateColor()
   }, [colorScheme])
-
- 
 
   let [fontsLoaded] = useFonts({
     Nunito_400Regular,

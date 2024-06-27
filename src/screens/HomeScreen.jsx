@@ -24,28 +24,12 @@ export default HomeScreen = () => {
   const navigation = useNavigation()
   const [isBackPressed, setIsBackPressed] = useState(false)
   const [uname, setuname] = useState()
-  const [tasks, settasks] = useState('')
   const [newTask, setnewTask] = useState(false)
   // removeItemFromStorage('tasks')
-  const { name, color } = useContext(NameContext)
+  const { name, color, tasks, setTasks } = useContext(NameContext)
   // const CheckUname = async () => {
 
-  const LoadTasks = async () => {
-    const loadTask = await loadData('tasks', '')
-    if (loadTask !== '') {
-      settasks(JSON.parse(loadTask))
-    } else {
-      settasks(false)
-    }
-  }
-  useEffect(() => {
-    LoadTasks()
-  }, [newTask])
-  useEffect(() => {
-    // CheckUname()
-    LoadTasks()
-  }, [])
-
+  console.log('yo', tasks)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -82,7 +66,7 @@ export default HomeScreen = () => {
             <TaskList
               tasks={tasks}
               color={color}
-              empty={(e) => e && settasks('')}
+              empty={(e) => e && setTasks('')}
             />
           )}
           <View

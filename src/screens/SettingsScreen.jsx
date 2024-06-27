@@ -8,9 +8,10 @@ import { TouchableOpacity } from '@gorhom/bottom-sheet'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { NameContext } from '../context/NameContext'
 import { RadioBtn } from '../components/Button'
+import BottomSheet from '@gorhom/bottom-sheet'
 
 export default function SettingsScreen({ navigation }) {
-  const { name, color, mode, setMode } = useContext(NameContext)
+  const { name, color, mode, setMode, setTasks } = useContext(NameContext)
   useEffect(() => {
     navigation.setOptions({
       headerTintColor: color?.textColor,
@@ -69,27 +70,51 @@ export default function SettingsScreen({ navigation }) {
           <Text style={[styles.head, { color: color?.primaryColor }]}>
             Delete all tasks
           </Text>
-          <SettingsCard
-            color={color}
-            onPress={() => navigation.navigate('newUser')}
-          >
-            <Text style={[styles.text, { color: color?.primaryColor }]}>
-              Delete
-            </Text>
-            <Octicons name='trash' size={20} color={color?.textColor + 'AB'} />
+          <SettingsCard color={color} onPress={() => setTasks('')}>
+            <Text style={[styles.text, { color: '#F25945' }]}>Delete</Text>
+            <Octicons name='trash' size={20} color='#F25945' />
           </SettingsCard>
         </SafeAreaView>
+        {/* <BottomSheet
+          ref={sheetRef}
+          snapPoints={[290, 500]}
+          backgroundStyle={{
+            backgroundColor: color.fgColor,
+            borderTopLeftRadius: 32,
+            borderTopRightRadius: 32,
+          }}
+          handleIndicatorStyle={{
+            backgroundColor: color.textColor,
+          }}
+          containerStyle={styles.sheet}
+          enablePanDownToClose
+          // index={peek ? 0 : -1}
+          animateOnMount={true}
+          onChange={handleSheetChanges}
+        >
+          <ScrollView>
+            <PeekCard
+              index={sheetIndex}
+              data={peek}
+              base={data}
+              setData={updateState}
+              color={color}
+              sheetRef={sheetRef}
+              closeSheet={closeSheet}
+            />
+          </ScrollView>
+        </BottomSheet> */}
       </GestureHandlerRootView>
     )
   }
 }
 
-const SettingsCard = ({ onPress, children, color }) => {
+const SettingsCard = ({ onPress, children, color, borderColor }) => {
   return (
     <View
       style={{
         backgroundColor: color?.fgColor,
-        borderColor: '#97979735',
+        borderColor: borderColor ? borderColor : '#97979735',
         borderWidth: 1,
         borderRadius: 10,
       }}

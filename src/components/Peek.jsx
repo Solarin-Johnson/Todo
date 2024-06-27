@@ -94,7 +94,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [0.6, 0.82, 1, 1],
+              [0.75, 0.82, 1, 1],
               Extrapolation.CLAMP,
             ),
             {
@@ -108,7 +108,7 @@ export default function PeekCard({
             interpolate(
               animatedIndex.value,
               [-1, 0, 0.5, 1],
-              [-100, -32, 0, 0],
+              [-50, -32, 0, 0],
               Extrapolation.CLAMP,
             ),
             {
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   float: {
     position: 'absolute',
-    top: 98,
+    top: 94,
     right: 5,
     fontFamily: 'Nunito_700Bold',
     // backgroundColor: 'grey',
