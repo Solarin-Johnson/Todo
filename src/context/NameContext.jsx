@@ -1,9 +1,10 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { loadData, saveData } from '../utils/store'
-import { Alert, StatusBar, useColorScheme } from 'react-native'
+import { Alert, useColorScheme, StatusBar as RNStatusBar } from 'react-native'
 import { DarkMode, LightMode } from '../styles/colors'
-import * as SystemUI from 'expo-system-ui'
 import { STYLES } from '../utils'
+import { StatusBar } from 'expo-status-bar'
+import * as SystemUI from 'expo-system-ui'
 
 export const NameContext = createContext()
 
@@ -63,7 +64,8 @@ export const NameProvider = ({ children }) => {
 
   useEffect(() => {
     if (mode !== null && mode !== undefined) {
-      StatusBar.setBarStyle(STYLES[mode], true)
+      RNStatusBar.setBarStyle(STYLES[mode], true)
+      console.log(STYLES[mode])
       saveData('mode', mode)
       updateColor()
     }
@@ -71,14 +73,13 @@ export const NameProvider = ({ children }) => {
 
   useEffect(() => {
     const updateUi = async () => {
-      color && SystemUI.setBackgroundColorAsync(color.bgColor)
+      color && SystemUI.setBackgroundColorAsync(color.fgColor)
     }
     updateUi()
   }, [color])
 
   useEffect(() => {
     if (tasks !== null && tasks !== undefined && tasks) {
-      console.log('bitch', tasks)
       saveData('tasks', JSON.stringify(tasks))
     }
   }, [tasks])
@@ -89,6 +90,11 @@ export const NameProvider = ({ children }) => {
     <NameContext.Provider
       value={{ name, setName, color, setColor, mode, setMode, tasks, setTasks }}
     >
+      <StatusBar
+        barStyle={STYLES[mode]}
+        backgroundColor='transparent'
+        translucent
+      />
       {children}
     </NameContext.Provider>
   )

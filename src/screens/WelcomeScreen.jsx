@@ -68,11 +68,12 @@ export const EnterName = ({ responsive, color }) => {
 
   return (
     <>
-      <View style={styles.subContainer}>
+      <View style={[styles.subContainer, { backgroundColor: color?.bgColor }]}>
         <Image
           style={styles.logo}
           source={require('../assets/splash.png')}
           contentFit='cover'
+          contentPosition={'center'}
         />
         <Text style={[styles.title, responsive.text]}>Todo</Text>
         {/* <Text
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.8,
     paddingBottom: 32,
     textAlign: 'center',
-    opacity: 0.8,
+    opacity: 0.9,
   },
   defText: {
     fontFamily: 'Nunito_500Medium',
@@ -236,8 +237,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   logo: {
-    height: 70,
-    marginBottom: 10,
+    height: 120,
   },
   bottomText: {
     alignSelf: 'center',

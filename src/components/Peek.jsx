@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
   },
   float: {
     position: 'absolute',
-    top: 94,
+    top: 98,
     right: 5,
     fontFamily: 'Nunito_700Bold',
     // backgroundColor: 'grey',

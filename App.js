@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { loadData, removeItemFromStorage } from './src/utils/store'
@@ -25,7 +25,6 @@ import {
   Raleway_600SemiBold,
   Raleway_700Bold,
 } from '@expo-google-fonts/dev'
-import { StatusBar } from 'expo-status-bar'
 import SettingsScreen from './src/screens/SettingsScreen'
 import { NameProvider } from './src/context/NameContext'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -50,21 +49,15 @@ export default function App() {
     }
     console.log(colorScheme)
   }
-  useEffect(() => {
-    // const loadResources = async () => {
-    //   try {
-    //     // Load FontAwesome icons
-    //     // const storedData = await AsyncStorage.getItem('myData')
-    //   } catch (error) {
-    //     console.error('Error loading resources:', error)
-    //   } finally {
-    //     setIsLoading(false)
-    //   }
-    // }
 
-    FontAwesome.loadFont()
-    // loadResources()
-  }, [])
+  // const updateStatusBar = async () => {
+  //   const mode = await loadData('mode', 'automatic')
+  //   StatusBar.setBarStyle(STYLES[mode], true)
+  // }
+
+  // useEffect(() => {
+  //   updateStatusBar()
+  // }, [])
 
   useEffect(() => {
     updateColor()

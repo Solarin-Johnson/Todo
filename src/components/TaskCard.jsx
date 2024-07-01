@@ -39,15 +39,15 @@ export const TaskCard = ({
   const [fav, setfav] = useState()
   const [seeAll, setSeeAll] = useState(false)
   const [longPressTimer, setLongPressTimer] = useState(null)
-  const dragScale = useSharedValue(1)
+  const activeColor = useSharedValue(color?.fgColor)
   const [ripple, setRipple] = useState(false)
 
   const handlePressIn = () => {
     const timer = setTimeout(() => {
+      console.log('pussy')
       setRipple(true)
       setTimeout(() => {
-        dragged()
-        dragScale.value = 1.03
+        drag()
       }, 100)
     }, 100)
     setLongPressTimer(timer)
@@ -74,12 +74,12 @@ export const TaskCard = ({
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: withSpring(dragScale.value) }],
+      backgroundColor: withSpring(activeColor.value),
     }
   })
 
   useEffect(() => {
-    dragScale.value = isActive ? 1.02 : 1
+    activeColor.value = isActive ? 'red' : color?.fgColor
   }, [isActive])
 
   const dragged = () => {
@@ -91,13 +91,14 @@ export const TaskCard = ({
       <Animated.View
         entering={LightSpeedInRight}
         exiting={LightSpeedOutLeft}
-        style={[styles.container, { backgroundColor: color.fgColor }]}
+        style={[styles.container, animatedStyle]}
       >
         <TouchableNativeFeedback
           style={[styles.child]}
           onPress={onPress}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
+          // onLongPress={drag}
           background={TouchableNativeFeedback.Ripple(
             ripple ? color?.primaryColor + '00' : color?.fgColor,
             false,

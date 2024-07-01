@@ -43,8 +43,11 @@ export default function TaskList({ tasks, color, empty }) {
   const scrollRef = useRef(null)
   const [peek, setPeek] = useState(false)
   const [fade, setFade] = useState(false)
+  const [draggin, setDraggin] = useState(false)
   const sheetRef = useRef(null)
   const fadeOpacity = useSharedValue(0.5)
+  const TasksContainerRef = useRef(null)
+
   useEffect(() => {
     setData(tasks)
   }, [tasks])
@@ -116,6 +119,7 @@ export default function TaskList({ tasks, color, empty }) {
   const handleDragEnd = ({ data }) => {
     setData(data)
     saveData('tasks', JSON.stringify(data))
+    setDraggin(false)
   }
 
   const updateState = (x) => {
@@ -161,6 +165,7 @@ export default function TaskList({ tasks, color, empty }) {
   const [refreshing, setRefreshing] = useState(false)
 
   const onRefresh = useCallback(async () => {
+    if (draggin) return
     setRefreshing(true)
     const loadTask = await loadData('tasks', '')
     setData(loadTask !== '' ? JSON.parse(loadTask) : [])
@@ -168,6 +173,8 @@ export default function TaskList({ tasks, color, empty }) {
       setRefreshing(false)
     }, 500)
   }, [])
+
+  console.log('Draggin', draggin)
 
   return (
     <>
@@ -252,22 +259,28 @@ export default function TaskList({ tasks, color, empty }) {
           {data.length > 0 && (
             <NestableScrollContainer
               style={[styles.page, { width: screenWidth }]}
+              ref={TasksContainerRef}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
                   onRefresh={onRefresh}
                   colors={Array(color?.accentColor)}
                   progressBackgroundColor={color?.bgColor}
+                  enabled={!draggin}
                 />
               }
             >
               <NestableDraggableFlatList
                 data={data}
                 containerStyle={styles.scroll}
+                scrollEnabled={!draggin}
                 renderItem={({ item, isActive, drag, getIndex }) => (
                   <TaskCard
                     data={item}
-                    drag={drag}
+                    drag={() => {
+                      setRefreshing(false)
+                      drag()
+                    }}
                     isActive={isActive}
                     color={color}
                     index={getIndex()}
@@ -279,6 +292,14 @@ export default function TaskList({ tasks, color, empty }) {
                   />
                 )}
                 keyExtractor={(item) => item.id.toString()}
+                onDragBegin={(i) => {
+                  setDraggin(i.toString())
+                  console.log('Pussy', i)
+                }}
+                onRelease={(i) => {
+                  console.log(i)
+                  setDraggin(false)
+                }}
                 onDragEnd={handleDragEnd}
                 nestedScrollEnabled={true}
               />

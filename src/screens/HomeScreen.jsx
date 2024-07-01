@@ -29,8 +29,6 @@ export default HomeScreen = () => {
   const { name, color, tasks, setTasks } = useContext(NameContext)
   // const CheckUname = async () => {
 
-  console.log('yo', tasks)
-
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {

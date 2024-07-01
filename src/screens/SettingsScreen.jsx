@@ -5,10 +5,14 @@ import { useBackHandler } from '@react-native-community/hooks'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { AntDesign, Octicons } from '@expo/vector-icons'
 import { TouchableOpacity } from '@gorhom/bottom-sheet'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import {
+  GestureHandlerRootView,
+  ScrollView,
+} from 'react-native-gesture-handler'
 import { NameContext } from '../context/NameContext'
 import { RadioBtn } from '../components/Button'
 import BottomSheet from '@gorhom/bottom-sheet'
+import Alert from '../components/alert'
 
 export default function SettingsScreen({ navigation }) {
   const { name, color, mode, setMode, setTasks } = useContext(NameContext)
@@ -37,8 +41,9 @@ export default function SettingsScreen({ navigation }) {
   if (color !== undefined && name) {
     return (
       <GestureHandlerRootView>
-        <SafeAreaView
+        <ScrollView
           style={[{ backgroundColor: color?.fgColor }, styles.container]}
+          showsVerticalScrollIndicator={false}
         >
           <SettingsCard
             color={color}
@@ -74,7 +79,9 @@ export default function SettingsScreen({ navigation }) {
             <Text style={[styles.text, { color: '#F25945' }]}>Delete</Text>
             <Octicons name='trash' size={20} color='#F25945' />
           </SettingsCard>
-        </SafeAreaView>
+          <View style={{ height: 80 }}></View>
+        </ScrollView>
+        {/* <Alert/> */}
         {/* <BottomSheet
           ref={sheetRef}
           snapPoints={[290, 500]}
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 8,
+    paddingTop: 30,
   },
   //   head: {
   //     paddingTop: 50,

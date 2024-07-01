@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar'
 import { useContext, useEffect, useState } from 'react'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { StyleSheet, Text, View } from 'react-native'
