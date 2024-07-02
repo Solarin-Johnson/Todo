@@ -39,12 +39,12 @@ export const TaskCard = ({
   const [fav, setfav] = useState()
   const [seeAll, setSeeAll] = useState(false)
   const [longPressTimer, setLongPressTimer] = useState(null)
-  const activeColor = useSharedValue(color?.fgColor)
+  const activeColor = useSharedValue()
   const [ripple, setRipple] = useState(false)
 
   const handlePressIn = () => {
     const timer = setTimeout(() => {
-      console.log('pussy')
+      // console.log('pussy')
       setRipple(true)
       setTimeout(() => {
         drag()
@@ -79,22 +79,26 @@ export const TaskCard = ({
   })
 
   useEffect(() => {
-    activeColor.value = isActive ? 'red' : color?.fgColor
+    activeColor.value = isActive ? color?.primaryColor + '10' : 'transparent'
+    // console.log('IsActive', isActive)
   }, [isActive])
 
   const dragged = () => {
     drag()
   }
 
+  useEffect(() => {
+    activeColor.value = 'transparent'
+  }, [])
+
   return (
     <Animated.View style={[styles.subContainer]}>
       <Animated.View
         entering={LightSpeedInRight}
         exiting={LightSpeedOutLeft}
-        style={[styles.container, animatedStyle]}
+        style={[styles.container, { backgroundColor: color?.fgColor }]}
       >
         <TouchableNativeFeedback
-          style={[styles.child]}
           onPress={onPress}
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}
@@ -105,7 +109,7 @@ export const TaskCard = ({
           )}
           // onTouchCancel={() => (dragScale.value = 1)}
         >
-          <View style={styles.child}>
+          <Animated.View style={[styles.child, animatedStyle]}>
             <View style={styles.btn}>
               <TouchableMadeEasier
                 round={true}
@@ -155,7 +159,7 @@ export const TaskCard = ({
                 />
               </TouchableMadeEasier>
             </View>
-          </View>
+          </Animated.View>
         </TouchableNativeFeedback>
       </Animated.View>
     </Animated.View>

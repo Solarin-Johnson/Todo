@@ -42,3 +42,28 @@ export const RadioBtn = ({ state, onPress, size, color }) => {
     </Pressable>
   )
 }
+
+export const XButton = ({
+  radius = 100,
+  text,
+  styleBtn,
+  styleText,
+  path,
+  action,
+}) => {
+  const navigationRef = useNavigation()
+  return (
+    <View style={{ borderRadius: radius, overflow: 'hidden' }}>
+      <TouchableNativeFeedback
+        background={TouchableNativeFeedback.Ripple('#ffffff00', false)}
+        onPress={() => {
+          action !== undefined && action()
+        }}
+      >
+        <View style={styleBtn}>
+          <Text style={styleText}>{text}</Text>
+        </View>
+      </TouchableNativeFeedback>
+    </View>
+  )
+}

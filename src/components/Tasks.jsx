@@ -174,7 +174,7 @@ export default function TaskList({ tasks, color, empty }) {
     }, 500)
   }, [])
 
-  console.log('Draggin', draggin)
+  // console.log('Draggin', draggin)
 
   return (
     <>
@@ -227,6 +227,7 @@ export default function TaskList({ tasks, color, empty }) {
           alwaysBounceHorizontal={true}
           decelerationRate='fast'
           contentContainerStyle={styles.scroll}
+          scrollEnabled={!draggin}
         >
           <View style={[styles.page, { width: screenWidth }]}>
             {favourites.length > 0 ? (
@@ -260,6 +261,7 @@ export default function TaskList({ tasks, color, empty }) {
             <NestableScrollContainer
               style={[styles.page, { width: screenWidth }]}
               ref={TasksContainerRef}
+              horizontal={false}
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -271,9 +273,9 @@ export default function TaskList({ tasks, color, empty }) {
               }
             >
               <NestableDraggableFlatList
+                horizontal={false}
                 data={data}
                 containerStyle={styles.scroll}
-                scrollEnabled={!draggin}
                 renderItem={({ item, isActive, drag, getIndex }) => (
                   <TaskCard
                     data={item}
@@ -281,7 +283,7 @@ export default function TaskList({ tasks, color, empty }) {
                       setRefreshing(false)
                       drag()
                     }}
-                    isActive={isActive}
+                    isActive={parseInt(draggin) === getIndex()}
                     color={color}
                     index={getIndex()}
                     base={data}
@@ -294,14 +296,14 @@ export default function TaskList({ tasks, color, empty }) {
                 keyExtractor={(item) => item.id.toString()}
                 onDragBegin={(i) => {
                   setDraggin(i.toString())
-                  console.log('Pussy', i)
+                  // console.log('Pussy', i)
                 }}
                 onRelease={(i) => {
                   console.log(i)
                   setDraggin(false)
                 }}
                 onDragEnd={handleDragEnd}
-                nestedScrollEnabled={true}
+                activationDistance={20}
               />
               <View style={{ height: 140 }}></View>
             </NestableScrollContainer>
@@ -359,7 +361,7 @@ const styles = StyleSheet.create({
   page: {
     height: '100%',
     flex: 1.5,
-    paddingVertical: 16,
+    paddingVertical: 20,
   },
   line: {
     height: 3,

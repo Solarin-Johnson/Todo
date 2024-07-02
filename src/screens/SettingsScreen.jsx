@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, BackHandler } from 'react-native'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useBackHandler } from '@react-native-community/hooks'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
@@ -16,6 +16,8 @@ import Alert from '../components/alert'
 
 export default function SettingsScreen({ navigation }) {
   const { name, color, mode, setMode, setTasks } = useContext(NameContext)
+  const [modalVisible, setModalVisible] = useState(false)
+
   useEffect(() => {
     navigation.setOptions({
       headerTintColor: color?.textColor,
@@ -75,13 +77,19 @@ export default function SettingsScreen({ navigation }) {
           <Text style={[styles.head, { color: color?.primaryColor }]}>
             Delete all tasks
           </Text>
-          <SettingsCard color={color} onPress={() => setTasks('')}>
+          <SettingsCard color={color} onPress={() => setModalVisible(true)}>
             <Text style={[styles.text, { color: '#F25945' }]}>Delete</Text>
             <Octicons name='trash' size={20} color='#F25945' />
           </SettingsCard>
           <View style={{ height: 80 }}></View>
         </ScrollView>
-        {/* <Alert/> */}
+        <Alert
+          title={'Delete all tasks?'}
+          description={'All tasks will be deleted permanently.'}
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          onPress={() => setTasks('')}
+        />
         {/* <BottomSheet
           ref={sheetRef}
           snapPoints={[290, 500]}
