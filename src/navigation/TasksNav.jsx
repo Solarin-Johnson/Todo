@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, useWindowDimensions } from 'react-native'
 import TouchableMadeEasier from '../components/touchables'
 import { FontAwesome } from '@expo/vector-icons'
 import Animated, {
+  Extrapolation,
   interpolateColor,
   useAnimatedStyle,
 } from 'react-native-reanimated'
 import { NameContext } from '../context/NameContext'
+import { toDp } from '../utils'
 
 export default function TaskNav({ state, scrollLeft, scrollRef }) {
   const [fav, setfav] = useState(false)
@@ -30,8 +32,8 @@ export default function TaskNav({ state, scrollLeft, scrollRef }) {
   const favColor = useAnimatedStyle(() => {
     const iconColor = interpolateColor(
       scrollLeft.value,
-      [0, 100, screenWidth],
-      [color?.accentColor, color?.textColor + '99', color?.textColor + '99'],
+      [0, 100],
+      [color?.accentColor, color?.textColor + '99'],
     )
 
     return {
@@ -42,8 +44,9 @@ export default function TaskNav({ state, scrollLeft, scrollRef }) {
   const taskColor = useAnimatedStyle(() => {
     const iconColor = interpolateColor(
       scrollLeft.value,
-      [0, 100, screenWidth],
-      [color?.textColor + 'cc', color?.textColor + 'cc', color?.accentColor],
+      // [0, toDp(100)],
+      [0, 100],
+      [color?.textColor + 'cc', color?.accentColor],
     )
 
     return {

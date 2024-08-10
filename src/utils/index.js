@@ -1,5 +1,5 @@
 import React from 'react'
-import { useWindowDimensions } from 'react-native'
+import { Dimensions, useWindowDimensions } from 'react-native'
 
 export const greetings = () => {
   const currentTime = new Date()
@@ -62,4 +62,14 @@ export const STYLES = {
   automatic: 'default',
   dark: 'dark-content',
   light: 'light-content',
+}
+
+export const toDp = (percentage) => {
+  return (Dimensions.get('window').width * Number(percentage)) / 100
+  try {
+    const { width } = Dimensions.get('window')
+    return (width * Number(percentage)) / 100
+  } catch (error) {
+    console.log(error)
+  }
 }

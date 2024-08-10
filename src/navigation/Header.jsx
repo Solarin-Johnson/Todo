@@ -25,6 +25,7 @@ export default Header = () => {
         color={color}
         onPress={() => navigation.navigate('settings')}
       >
+        
         <FontAwesome6 name='bars' size={24} color={color?.textColor} />
       </TouchableMadeEasier>
     </View>

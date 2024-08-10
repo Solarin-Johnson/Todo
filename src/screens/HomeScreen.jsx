@@ -35,12 +35,12 @@ export default HomeScreen = () => {
         if (!newTask) {
           if (isBackPressed) {
             BackHandler.exitApp()
-            return true // Prevent default behavior
+            return true
           } else {
-            ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT)
-            setIsBackPressed(true) // Set flag to true
-            setTimeout(() => setIsBackPressed(false), 2000) // Reset flag after 2 seconds
-            return true // Prevent default behavior
+            ToastAndroid.show('Press back again to exit', ToastAndroid.BOTTOM)
+            setIsBackPressed(true)
+            setTimeout(() => setIsBackPressed(false), 2000)
+            return true
           }
         }
       }
@@ -49,8 +49,9 @@ export default HomeScreen = () => {
 
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', onBackPress)
-    }, [navigation]),
+    }, [navigation, newTask, isBackPressed]),
   )
+  console.log(isBackPressed)
   if (color !== undefined) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
