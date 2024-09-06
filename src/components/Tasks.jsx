@@ -80,7 +80,7 @@ export default function TaskList({ tasks, color, empty }) {
   })
 
   const animatedLineStyle = useAnimatedStyle(() => {
-    const translateX = calculateScrollPercentage.value
+    const translateX = interpolate(scrollX.value, [0, screenWidth], [0, 55])
     const width = translateX * 1.5 // For example purposes, you can calculate this differently
     return {
       transform: [
@@ -225,11 +225,11 @@ export default function TaskList({ tasks, color, empty }) {
           showsHorizontalScrollIndicator={false}
           onScroll={scrollHandler}
           onScrollEndDrag={(e) => setScrollLeft(e.nativeEvent.contentOffset.x)}
-          // scrollEventThrottle={-50}
+          scrollEventThrottle={-200}
           snapToOffsets={[0, screenWidth]} // Snap to each page
-          overScrollMode='never'
-          alwaysBounceHorizontal={false}
-          decelerationRate='normal'
+          overScrollMode='always'
+          alwaysBounceHorizontal={true}
+          decelerationRate='fast'
           contentContainerStyle={styles.scroll}
           scrollEnabled={!draggin}
         >
