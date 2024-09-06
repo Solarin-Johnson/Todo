@@ -6,6 +6,8 @@ import {
   StyleSheet,
   View,
   TouchableNativeFeedback,
+  ScrollView,
+  SectionList,
 } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { useBackHandler } from '@react-native-community/hooks'
@@ -57,16 +59,20 @@ export default HomeScreen = () => {
         <SafeAreaView
           style={[{ backgroundColor: color?.fgColor }, styles.container]}
         >
-          <Header color={color} uname={name} />
-          {!tasks || tasks.length < 1 ? (
-            <NoTask color={color} />
-          ) : (
-            <TaskList
-              tasks={tasks}
-              color={color}
-              empty={(e) => e && setTasks('')}
-            />
-          )}
+          <SectionList
+            StickyHeaderComponent={<Header color={color} uname={name} />}
+            // invertStickyHeaders
+          >
+            {!tasks || tasks.length < 1 ? (
+              <NoTask color={color} />
+            ) : (
+              <TaskList
+                tasks={tasks}
+                color={color}
+                empty={(e) => e && setTasks('')}
+              />
+            )}
+          </SectionList>
           <View
             style={[
               { backgroundColor: color?.accentColor },

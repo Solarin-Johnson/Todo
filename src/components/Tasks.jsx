@@ -191,7 +191,12 @@ export default function TaskList({ tasks, color, empty }) {
           </Animated.View>
         </TouchableWithoutFeedback>
       )}
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { minHeight: Dimensions.get('window').height },
+        ]}
+      >
         <View
           style={[
             styles.head,
@@ -217,15 +222,14 @@ export default function TaskList({ tasks, color, empty }) {
         <Animated.ScrollView
           ref={scrollRef}
           horizontal
-          // pagingEnabled
           showsHorizontalScrollIndicator={false}
           onScroll={scrollHandler}
           onScrollEndDrag={(e) => setScrollLeft(e.nativeEvent.contentOffset.x)}
-          scrollEventThrottle={-200}
+          // scrollEventThrottle={-50}
           snapToOffsets={[0, screenWidth]} // Snap to each page
-          overScrollMode='always'
-          alwaysBounceHorizontal={true}
-          decelerationRate='fast'
+          overScrollMode='never'
+          alwaysBounceHorizontal={false}
+          decelerationRate='normal'
           contentContainerStyle={styles.scroll}
           scrollEnabled={!draggin}
         >
@@ -352,7 +356,7 @@ export default function TaskList({ tasks, color, empty }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
   },
   head: {
     marginTop: 15,
