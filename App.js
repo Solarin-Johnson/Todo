@@ -50,15 +50,6 @@ export default function App() {
     console.log(colorScheme)
   }
 
-  // const updateStatusBar = async () => {
-  //   const mode = await loadData('mode', 'automatic')
-  //   StatusBar.setBarStyle(STYLES[mode], true)
-  // }
-
-  // useEffect(() => {
-  //   updateStatusBar()
-  // }, [])
-
   useEffect(() => {
     updateColor()
   }, [colorScheme])
